@@ -13,7 +13,7 @@ create table products (
 	id bigserial primary key,
 	barcode text unique,
 	barcode_type barcode_type not null,
-	title text,
+	title text default null,
 	category integer references categories(id),
 );
 create index idx_product_barcode on products(barcode);
