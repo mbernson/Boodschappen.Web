@@ -4,6 +4,9 @@ namespace Boodschappen\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use Boodschappen\Crawling\DataSources\AlbertHeijn;
+use Boodschappen\Crawling\DataSources\Jumbo;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -16,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
+    private $product_sources = [
+        AlbertHeijn::class,
+        Jumbo::class,
+    ];
+
     /**
      * Register any application services.
      *
@@ -23,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        foreach($this->product_sources as $source) {
+            $this->app->bind($source);
+        }
     }
 }

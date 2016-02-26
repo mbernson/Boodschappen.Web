@@ -15,15 +15,14 @@ class CreateFetchedDataTable extends Migration
         Schema::create('fetched_data', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('barcode');
-
             $table->string('source');
+
+            $table->json('query');
 
             $table->json('response')->nullable();
 
             $table->timestamp('created_at')->default(DB::raw('now()'));
         });
-        DB::connection()->getPdo()->exec("alter table fetched_data add column barcode_type barcode_type not null;");
     }
 
     /**

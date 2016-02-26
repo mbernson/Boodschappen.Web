@@ -34,6 +34,7 @@ class Handler extends ExceptionHandler
     public function report(Exception $e)
     {
         parent::report($e);
+        $this->logException($e);
     }
 
     /**
@@ -46,5 +47,13 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         return parent::render($request, $e);
+    }
+
+    private function logException(Exception $e)
+    {
+        $exception = [
+            'message' => $e->getMessage(),
+            'code' => $e->getCode(),
+        ];
     }
 }

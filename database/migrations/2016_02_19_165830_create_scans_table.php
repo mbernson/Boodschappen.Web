@@ -19,7 +19,7 @@ class CreateScansTable extends Migration
 
             $table->string('barcode');
 
-            // Location
+            // Geolocation?
 
             $table->timestamp('created_at')->default(DB::raw('now()'));
         });

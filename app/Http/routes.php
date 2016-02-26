@@ -26,6 +26,7 @@ Route::get('/', function () {
 |
 */
 
+
 Route::group(['middleware' => ['web']], function () {
     //
 });
@@ -34,4 +35,18 @@ Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
     Route::get('/home', 'HomeController@index');
+
+//    Route::get('/', 'GenericProductsController@index');
+    Route::resource('products', 'Management\ProductsController');
+    Route::resource('generic_products', 'Management\GenericProductsController');
+});
+
+Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Api'], function() {
+    Route::post('/products', 'ProductsController@add');
+    Route::put('/products/{barcode}', 'ProductsController@update');
+
+    Route::post('/scans', 'ProductsController@add');
+
+    Route::get('/products/{barcode}', 'ProductsController@info');
+
 });

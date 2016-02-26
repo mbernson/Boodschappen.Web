@@ -14,12 +14,15 @@ class CreatePricesTable extends Migration
     {
         Schema::create('prices', function (Blueprint $table) {
             $table->bigInteger('product_id')->references('id')->on('products');
-            $table->integer('store_id')->references('id')->on('stores');
+
+            $table->integer('company_id')->nullable()->references('id')->on('companies');
+//            $table->integer('store_id')->nullable()->references('id')->on('stores');
+
             $table->decimal('price', 8, 2);
 
             $table->timestamp('created_at')->default(DB::raw('now()'));
 
-            $table->primary(['product_id', 'store_id']);
+            $table->primary(['product_id', 'created_at']);
         });
     }
 

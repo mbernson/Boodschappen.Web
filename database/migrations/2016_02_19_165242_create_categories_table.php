@@ -12,11 +12,14 @@ class CreateCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('generic_products', function (Blueprint $table) {
             $table->increments('id');
+
             $table->string('title')->unique();
-            $table->integer('parent_id')->nullable()->references('id')->on('categories');
-            $table->timestamps();
+            $table->integer('parent_id')->nullable()->references('id')->on('generic_products');
+            $table->integer('depth')->default(0);
+
+            $table->timestamp('created_at')->default(DB::raw('now()'));
         });
     }
 
@@ -27,6 +30,6 @@ class CreateCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('categories');
+        Schema::drop('generic_products');
     }
 }
