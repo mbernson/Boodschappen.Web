@@ -30,19 +30,6 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
-function q($query) {
-    $product_sources = [
-        \Boodschappen\Crawling\DataSources\Jumbo::class,
-        \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
-    ];
-    foreach($product_sources as $klass) {
-        echo "$klass::query('$query')...\n";
-        $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);
-        $job->handle();
-    }
-    return true;
-}
-
 $status = $kernel->handle(
     $input = new Symfony\Component\Console\Input\ArgvInput,
     new Symfony\Component\Console\Output\ConsoleOutput

@@ -41,6 +41,8 @@ $app->singleton(
     Boodschappen\Exceptions\Handler::class
 );
 
+require_once base_path('bootstrap/utilities.php');
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application
