@@ -16,7 +16,9 @@
     @foreach($items as $item)
         <tr>
             @foreach($item as $k => $v)
-                @if(is_string($v) || $k == 'id')
+                @if($k == 'id' || $k == 'title')
+                <td><a href="/products/{{ $item['id'] }}">{{ $v }}</a></td>
+                @elseif(is_string($v))
                 <td>{{ $v }}</td>
                 @elseif(is_int($v) || is_float($v))
                 <td>{{ app('\NumberFormatter')->format($v) }}</td>

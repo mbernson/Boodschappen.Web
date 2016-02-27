@@ -5,6 +5,7 @@ namespace Boodschappen\Jobs;
 use Boodschappen\Crawling\ProductDataSource;
 use Boodschappen\Database\GenericProduct;
 use Boodschappen\Database\Product;
+use Boodschappen\Domain\Product as DomainProduct;
 use Boodschappen\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -16,6 +17,8 @@ class QueryProductsJob extends Job implements ShouldQueue
 
     private $adapter;
     private $query;
+    /** @var GenericProduct[]|null */
+    private $categories = null;
 
     /**
      * queryBarcodeInfoJob constructor.
@@ -26,6 +29,11 @@ class QueryProductsJob extends Job implements ShouldQueue
     {
         $this->adapter = $adapter;
         $this->query = $query;
+        /** @var GenericProduct $category */
+        $category = GenericProduct::where('title', 'ilike', "$query")->first();
+        if($category) {
+            $this->categories = $category->subcategories();
+        }
     }
 
     /**
@@ -45,43 +53,51 @@ class QueryProductsJob extends Job implements ShouldQueue
         if(empty($products)) {
             echo "No products found for query $this->query";
         } else {
-            foreach($products as $data) {
-                $price = $data['price'];
-                unset($data['price']);
-                $product = $this->saveOrUpdateProduct($data);
-                $product->updatePrice($price, $company_id);
+            /** @var DomainProduct $domain_product */
+            foreach($products as $domain_product) {
+                $product = $this->saveOrUpdateProduct($domain_product);
+                $product->updatePrice($domain_product->current_price, $company_id);
             }
         }
     }
 
     /**
-     * @param array $data
+     * @param DomainProduct $domain_product
      * @return Product
      */
-    private function saveOrUpdateProduct(array $data)
+    private function saveOrUpdateProduct(DomainProduct $domain_product)
     {
-        if(array_key_exists('barcode', $data)) {
+        if($domain_product->barcode != null) {
             /** @var Product $product */
             $product = Product::firstOrNew([
-                'barcode' => $data['barcode'],
+                'barcode_type' => $domain_product->barcode->type,
+                'barcode' => $domain_product->barcode->value,
+            ]);
+        } elseif($domain_product->sku != null) {
+            /** @var Product $product */
+            $product = Product::firstOrNew([
+                'sku' => $domain_product->sku,
             ]);
         } else {
             /** @var Product $product */
             $product = Product::firstOrNew([
-                'title' => $data['title'],
-                'brand' => $data['brand'],
-                'unit_size' => $data['unit_size'],
+                'title' => $domain_product->title,
+                'brand' => $domain_product->brand,
+                'unit_size' => $domain_product->unit_size,
             ]);
         }
-        $product->fill($data);
+        $product->fill((array) $domain_product);
         if($product->exists) {
             echo "Updating product $product->title\n";
         } else {
             echo "Adding new product $product->title\n";
         }
-        $category = $product->guessCategory($data['title']);
+
+        $category = $product->guessCategory($domain_product->title, $this->categories);
+
         $product->generic_product_id = $category->id;
         $product->save();
+
         return $product;
     }
 

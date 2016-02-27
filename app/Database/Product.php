@@ -1,5 +1,6 @@
 <?php namespace Boodschappen\Database;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 
@@ -7,13 +8,27 @@ class Product extends Model
 {
     public $table = 'products';
 
-    public $fillable = ['title', 'brand', 'price', 'unit_size',
+    public $fillable = [
+        'title', 'brand',
+        'unit_size',
+        'unit_amount',
+        'bulk',
         'generic_product_id',
-    'extended_attributes',
-        'barcode', 'barcode_type'];
+        'sku',
+        'barcode', 'barcode_type',
+        'extended_attributes',
+    ];
+
+    public $guarded = [
+        'id',
+    ];
 
     public $casts = [
         'extended_attributes' => 'json',
+        'bulk' => 'integer',
+        'unit_amount' => 'float',
+        'price' => 'float',
+        'company_id' => 'int',
     ];
 
     private static $categories = null;
@@ -22,21 +37,69 @@ class Product extends Model
         return $this->hasMany('Boodschappen\Database\Price');
     }
 
+    public function genericProduct() {
+        return $this->belongsTo('Boodschappen\Database\GenericProduct');
+    }
+
+    public function getAmountAttribute() {
+        $bulk = $this->bulk;
+        $unit = $this->unit_size;
+        $amount = $this->unit_amount;
+        if(is_null($bulk) || $bulk < 1)
+            $bulk = 1;
+
+        if($amount <= 0)
+            $amount = 1;
+
+        $total = $bulk * $amount;
+        return "$total $unit";
+    }
+
+    public function comparableProducts() {
+        $gid = $this->genericProduct->id;
+        $generic_ids = DB::table(DB::raw("generic_products_subtree($gid)"))
+            ->select('id')->pluck('id');
+
+        $unit = $this->unit_size[0];
+
+        $query = Product::select('id', 'title', 'brand', 'unit_amount', 'unit_size')
+            ->whereIn('generic_product_id', $generic_ids)
+            ->where('id', '!=', $this->id)
+            ->where('unit_size', 'ilike', "%$unit%");
+        if($this->unit_amount > 0) {
+            $query->where('unit_amount', '<', $this->unit_amount + 0.1)
+                  ->where('unit_amount', '>', $this->unit_amount - 0.1);
+        }
+        return $query;
+    }
+
     public function renderImage() {
         try {
-            if (is_array($this->extended_attributes)) {
-                $attrs = $this->extended_attributes;
+            $attrs = $this->extended_attributes;
+            if (is_array($attrs)) {
                 if (array_key_exists('image', $attrs) && is_string($attrs['image'])) {
                     return '<img src="' . $attrs['image'] . '"/>';
                 } elseif (array_key_exists('images', $attrs)) {
                     $images = $attrs['images'];
                     return '<img src="' . $images[0] . '"/>';
                 }
+            } elseif(is_object($attrs)) {
+                if (property_exists($attrs, 'image') && is_string($attrs->image)) {
+                    return '<img src="' . $attrs->image . '"/>';
+                } elseif (array_key_exists($attrs, 'images') && count($attrs->images) > 0) {
+                    return '<img src="' . $attrs->images[0] . '"/>';
+                }
             }
         } catch(\ErrorException $e) {}
+
         return '';
     }
 
+    /**
+     * @param float $price
+     * @param integer $company_id
+     * @return bool
+     */
     public function updatePrice($price, $company_id) {
         $table = $this->getConnection()->table('prices');
         $last_price = $table->where('product_id', '=', $this->getKey())
@@ -64,30 +127,36 @@ class Product extends Model
         }
     }
 
-    public function guessCategory($input = null) {
+    public function categoryFromGenericProduct(GenericProduct $genericProduct) {
+        return $this->guessCategory($genericProduct->title, $genericProduct->subcategories());
+    }
+
+    public function guessCategory($input = null, array $categories = null) {
         if(is_null($input))
             $input = $this->title;
 
         if(!static::$categories) {
-            echo "Fetching categories...\n";
-            static::$categories = GenericProduct::select('id', 'title')
-                ->orderBy('depth', 'asc')
-                ->limit(1000)->get();
+            echo "Caching categories...\n";
+            static::$categories = GenericProduct::find(1)->subcategories();
             echo "Done.\n";
+        }
+
+        if(is_null($categories)) {
+            $categories = static::$categories;
         }
 
         // no shortest distance found, yet
         $shortest = -1;
 
         // loop through words to find the closest
-        foreach (static::$categories as $category) {
+        foreach ($categories as $category) {
 
             // calculate the distance between the input word,
             // and the current word
-            $lev = levenshtein($input, $category['title']);
+            $lev = levenshtein($input, $category->title);
 
             // check for an exact match
-            if ($lev == 0) {
+            if ($lev == 0) { // } || str_contains(strtolower($category->title), strtolower($input))) {
 
                 // closest word is this one (exact match)
                 $closest = $category;

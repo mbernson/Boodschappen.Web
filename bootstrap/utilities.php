@@ -23,8 +23,8 @@ function cat($title, $parent) {
 
 function q($query) {
     $product_sources = [
-        \Boodschappen\Crawling\DataSources\Hoogvliet::class,
-        \Boodschappen\Crawling\DataSources\Jumbo::class,
+//        \Boodschappen\Crawling\DataSources\Hoogvliet::class,
+//        \Boodschappen\Crawling\DataSources\Jumbo::class,
         \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
     ];
     foreach($product_sources as $klass) {
@@ -39,4 +39,15 @@ function filter_whitespace($text) {
     $text = str_replace("\n", '', $text);
     $text = str_replace(' ', '', $text);
     return trim($text);
+}
+
+function companyName($id) {
+    $companies = [
+        1 => 'Jumbo',
+        2 => 'Albert Heijn',
+        3 => 'Bol.com',
+        4 => 'OpenFoodFacts',
+        5 => 'Hoogvliet',
+    ];
+    return $companies[$id];
 }

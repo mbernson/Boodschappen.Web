@@ -7,9 +7,20 @@ use Illuminate\Http\Request;
 
 use Boodschappen\Http\Requests;
 use Boodschappen\Http\Controllers\Controller;
+use NumberFormatter;
 
 class ProductsController extends Controller
 {
+    /**
+     * ProductsController constructor.
+     */
+    public function __construct()
+    {
+        $this->currencyFormatter = new NumberFormatter('nl_NL', NumberFormatter::CURRENCY);
+        view()->share('currencyFormatter', $this->currencyFormatter);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -17,44 +28,22 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $cols = ['id', 'title', 'brand', 'unit_size', 'prices.price', 'company_id'];
+        $cols = ['id', 'title', 'brand', 'unit_amount', 'unit_size', 'prices.price', 'company_id'];
         $query = Product::query();
         $products = $query->join('prices', 'prices.product_id', '=', 'id')
             ->select(...$cols)
             ->orderBy('products.created_at', 'desc');
+
         if($request->has('q')) {
             $query = join('', ['%', $request->get('q'), '%']);
             $products->where('title', 'ilike', $query)
                 ->orWhere('brand', 'ilike', $query);
         }
-        $count = Product::count();
 
         $products = $products->paginate(100);
-        $items = $products->toArray()['data'];
         return view('products.index')
             ->withProducts($products)
-            ->withItems($items)->withCount($count);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+            ->withCount(Product::count());
     }
 
     /**
@@ -65,10 +54,25 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
+        /** @var Product $product */
         $product = Product::find($id);
-        $prices = $product->prices()->orderBy('created_at', 'desc')->get();
+
+        $prices = $product->prices()
+            ->select('title', 'price', 'prices.created_at')
+            ->join('companies', 'company_id', '=', 'id')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $related = $product->comparableProducts()
+            ->select('id', 'title', 'brand', 'price', 'company_id', 'unit_amount', 'unit_size')
+            ->join('prices', 'prices.product_id', '=', 'id')
+            ->orderBy('price', 'asc')
+            ->get();
+
         return view('products.show')
-            ->withProduct($product)->withPrices($prices);
+            ->withProduct($product)
+            ->withRelated($related)
+            ->withPrices($prices);
     }
 
     /**

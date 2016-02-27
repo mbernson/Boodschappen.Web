@@ -60,7 +60,15 @@ class GenericProductsController extends Controller
     public function show($id)
     {
         $product = GenericProduct::find($id);
-        return view('generic_products.show')->withProduct($product);
+        $generic_ids = \DB::table(\DB::raw("generic_products_subtree($product->id)"))
+            ->select('id')->pluck('id');
+        $products = Product::
+            select('id', 'title', 'brand', 'price', 'company_id', 'unit_amount', 'unit_size')
+            ->join('prices', 'prices.product_id', '=', 'id')
+            ->whereIn('generic_product_id', $generic_ids)->get();
+        return view('generic_products.show')
+            ->withProducts($products)
+            ->withProduct($product);
     }
 
     /**

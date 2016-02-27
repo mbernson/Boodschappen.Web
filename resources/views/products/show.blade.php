@@ -6,15 +6,48 @@
             <div class="col-md-10 col-md-offset-1">
                 <h2>Product</h2>
                 <h1><a href="">{{ $product->title }}</a></h1>
+
                 {!! $product->renderImage() !!}
+
+                <table class="table table-striped">
+                    <tr>
+                        <th>Product categorie</th>
+                        <td><a href="/generic_products/{{ $product->genericProduct->id }}">{{ $product->genericProduct->title }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>Hoeveelheid</th>
+                        <td>{{ $product->amount }}</td>
+                    </tr>
+                    <tr>
+                        <th>SKU</th>
+                        <td>{{ $product->sku }}</td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <th>Toegevoegd op</th>
+                        <td>{{ $product->created_at }}</td>
+                    </tr>
+                    <tr>
+                        <th>Bijgewerkt op</th>
+                        <td>{{ $product->updated_at }}</td>
+                    </tr>
+                    -->
+                </table>
+
+                <h3>Prijs historie</h3>
+                @include('partials.price_history_table', compact('prices', 'currencyFormatter'))
+
+                <h3>Vergelijkbare producten</h3>
+                @include('partials.products_table', ['items' => $related->toArray()])
+
+                @if(!empty($product->extended_attributes))
+                    <h3>Extra product attributen</h3>
+                    @include('partials.table', ['items' => [$product->extended_attributes]])
+                @endif
+
+                <h3>Rauwe productdata</h3>
                 <div class="well-lg">
                     {!! var_dump($product->toArray()) !!}
-                </div>
-                <h3>Prijs historie</h3>
-                @include('partials.table', ['items' => $prices->toArray()])
-                <h3>Attributen</h3>
-                <div class="well-lg">
-                    {!! var_dump($product->extended_attributes) !!}
                 </div>
             </div>
         </div>

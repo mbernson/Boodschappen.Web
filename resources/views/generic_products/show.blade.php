@@ -9,6 +9,10 @@
                 <div class="well-lg">
                     {!! var_dump($product->toArray()) !!}
                 </div>
+
+                <h3>Producten in deze categorie</h3>
+
+                @include('partials.products_table', ['items' => $products->toArray()])
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@ use Log;
 
 abstract class BaseDataSource
 {
-    protected function parseBrand($name) {
+    protected function guessBrand($name) {
         $brand = explode(' ', $name)[0];
 
         return $brand;

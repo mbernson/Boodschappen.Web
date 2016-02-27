@@ -1,7 +1,7 @@
 <?php namespace Boodschappen\Crawling\DataSources;
 
 use Boodschappen\Crawling\ProductDataSource;
-use Boodschappen\Database\Product;
+use Boodschappen\Domain\Product;
 use Boodschappen\Domain\Barcode;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -22,7 +22,7 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
 
     /**
      * @param string $query
-     * @return array
+     * @return Product[]
      */
     public function query($query)
     {
@@ -32,20 +32,20 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
 
         $results = $crawler->filter('.ish-productList .ish-productList-item')->each(function(Crawler $node) {
             try {
-                $title = trim($node->filter('.ws-product-title .hv-brand + div')->first()->text());
-                $brand = $node->filter('.hv-brand')->first()->text();
+                $product = new Product();
+                $product->title = trim($node->filter('.ws-product-title .hv-brand + div')->first()->text());
+                $product->brand = $node->filter('.hv-brand')->first()->text();
 
                 $price = $node->filter('.kor-product-sale-price')->first()->text();
-                $price = floatval(filter_whitespace($price));
+                $product->current_price = floatval(filter_whitespace($price));
 
-                $unit_size = trim($node->filter('.ratio-base-packing-unit')->first()->text());
-                $barcode = $source_id = $sku = $node->filter('input[name="SKU"]')->first()->attr('value');
-                $extended_attributes = [
-                    'id' => $sku,
+                $product->setGuessedUnitSizeAndAmount(trim($node->filter('.ratio-base-packing-unit')->first()->text()));
+                $product->sku = $node->filter('input[name="SKU"]')->first()->attr('value');
+                $product->extended_attributes = [
                     'image' => $this->baseUrl.$node->filter('img.ish-product-image')->attr('src'),
                 ];
 
-                return compact('title', 'brand', 'price', 'unit_size', 'source_id', 'barcode', 'extended_attributes');
+                return $product;
             } catch(\Exception $e) {
                 $this->logException($e);
                 return null;
@@ -61,11 +61,6 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
     public function queryBarcode(Barcode $barcode)
     {
         // TODO: Implement queryBarcode() method.
-    }
-
-    public function updatePrices(Product $product)
-    {
-        // TODO: Implement updatePrices() method.
     }
 
     public function getCompanyId()

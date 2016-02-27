@@ -1,8 +1,9 @@
 <?php namespace Boodschappen\Crawling\DataSources;
 
-use Boodschappen\Database\Product;
 use Boodschappen\Crawling\ProductDataSource;
+use Boodschappen\Domain\Product;
 use Boodschappen\Domain\Barcode;
+
 use GuzzleHttp\Client;
 
 use Storage;
@@ -32,7 +33,7 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
 
     /**
      * @param string $query
-     * @return array
+     * @return Product[]
      */
     public function query($query)
     {
@@ -66,6 +67,10 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
         // TODO: Implement updatePrices() method.
     }
 
+    /**
+     * @param \stdClass $json
+     * @return Product[]
+     */
     private function parseResponse(\stdClass $json)
     {
         foreach($json->_embedded->lanes as $lane) {
@@ -75,30 +80,35 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
         }
     }
 
+    /**
+     * @param array $items
+     * @return Product[]
+     */
     private function parseItems(array $items)
     {
         $results = [];
         foreach($items as $item) {
             if(!property_exists($item, '_embedded')) break;
 
-            $product = $item->_embedded->productCard->_embedded->product;
-            $title = str_replace('­', '', $product->description); // FIXME
+            $product = new Product();
+            $api_product = $item->_embedded->productCard->_embedded->product;
+            $product->title = str_replace('­', '', $api_product->description); // FIXME
 
-            if(property_exists($product, 'brandName'))
-                $brand = $product->brandName;
+            if(property_exists($api_product, 'brandName'))
+                $product->brand = $api_product->brandName;
             else
-                $brand = $this->parseBrand($title);
+                $product->brand = $this->guessBrand($product->title);
 
-            $price = floatval($product->priceLabel->now);
-            $unit_size = $product->unitSize;
-            $barcode = $source_id = $product->id;
-            $extended_attributes = [
-                'id' => $product->id,
-                'category' => $product->categoryName,
-                'images' => $product->images,
-                'image' => end($product->images),
+            $product->current_price = floatval($api_product->priceLabel->now);
+            $product->setGuessedUnitSizeAndAmount($api_product->unitSize);
+            $product->sku = $api_product->id;
+
+            $product->extended_attributes = [
+                'category' => $api_product->categoryName,
+                'images' => $api_product->images,
+                'image' => end($api_product->images),
             ];
-            $results[] = compact('title', 'price', 'brand', 'barcode', 'unit_size', 'extended_attributes');
+            $results[] = $product;
         }
         return $results;
     }

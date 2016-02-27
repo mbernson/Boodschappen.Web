@@ -4,8 +4,11 @@ namespace Boodschappen\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use Boodschappen\Crawling\DataSources\Hoogvliet;
 use Boodschappen\Crawling\DataSources\AlbertHeijn;
 use Boodschappen\Crawling\DataSources\Jumbo;
+
+use NumberFormatter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     private $product_sources = [
         AlbertHeijn::class,
         Jumbo::class,
+        Hoogvliet::class,
     ];
 
     /**
@@ -34,5 +38,10 @@ class AppServiceProvider extends ServiceProvider
         foreach($this->product_sources as $source) {
             $this->app->bind($source);
         }
+
+        $this->app->singleton('\NumberFormatter', function() {
+            $numberFormatter = new NumberFormatter('nl_NL', NumberFormatter::DECIMAL);
+            return $numberFormatter;
+        });
     }
 }

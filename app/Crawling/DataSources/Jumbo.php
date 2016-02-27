@@ -1,7 +1,7 @@
 <?php namespace Boodschappen\Crawling\DataSources;
 
 use Boodschappen\Crawling\ProductDataSource;
-use Boodschappen\Database\Product;
+use Boodschappen\Domain\Product;
 use Boodschappen\Domain\Barcode;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -20,7 +20,7 @@ class Jumbo extends BaseDataSource implements ProductDataSource
 
     /**
      * @param string $query
-     * @return array
+     * @return Product[]
      */
     public function query($query)
     {
@@ -30,26 +30,27 @@ class Jumbo extends BaseDataSource implements ProductDataSource
 
         $results = $crawler->filter('.jum-item')->each(function(Crawler $node) {
             try {
-                $title = $node->filter('h3')->first()->text();
-                $brand = explode(" ", $title)[0];
+                $product = new Product();
+                $product->title = $node->filter('h3')->first()->text();
+                $product->brand = $this->guessBrand($product->title);
 
                 $price = $node->filter('.jum-price-format')->first()->text();
                 $price = intval($price);
                 if($price > 0) $price = $price / 100;
+                $product->current_price = $price;
 
-                $unit_size = $node->filter('.jum-pack-size')->first()->text();
+                $product->setGuessedUnitSizeAndAmount($node->filter('.jum-pack-size')->first()->text());
+                $product->sku = $node->attr('data-jum-product-sku');
+
                 $extended_attributes = $node->attr('data-jum-product-impression');
-                $barcode = $sku = $node->attr('data-jum-product-sku');
-
                 if(!empty($extended_attributes)) {
                     $extended_attributes = json_decode($extended_attributes, true);
-                    $source_id = $extended_attributes['id'];
                 } else {
                     $extended_attributes = null;
-                    $source_id = null;
                 }
+                $product->extended_attributes = $extended_attributes;
 
-                return compact('title', 'brand', 'price', 'unit_size', 'source_id', 'barcode', 'extended_attributes');
+                return $product;
             } catch(\Exception $e) {
                 $this->logException($e);
                 return null;
@@ -57,19 +58,6 @@ class Jumbo extends BaseDataSource implements ProductDataSource
         });
 
         return array_filter($results);
-    }
-    /**
-     * @param Barcode $barcode
-     * @return array|null
-     */
-    public function queryBarcode(Barcode $barcode)
-    {
-        // TODO: Implement queryBarcode() method.
-    }
-
-    public function updatePrices(Product $product)
-    {
-        // TODO: Implement updatePrices() method.
     }
 
     public function getCompanyId()
