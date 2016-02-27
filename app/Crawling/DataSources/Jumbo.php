@@ -8,7 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use Storage;
 
-class Jumbo implements ProductDataSource
+class Jumbo extends BaseDataSource implements ProductDataSource
 {
     /** @var Client */
     private $client;
@@ -51,6 +51,7 @@ class Jumbo implements ProductDataSource
 
                 return compact('title', 'brand', 'price', 'unit_size', 'source_id', 'barcode', 'extended_attributes');
             } catch(\Exception $e) {
+                $this->logException($e);
                 return null;
             }
         });

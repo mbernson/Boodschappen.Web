@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class GenericProduct extends Model
 {
     public $table = 'generic_products';
+    public $timestamps = false;
 
     public function children() {
         return $this->hasMany('Boodschappen\Database\GenericProduct', 'parent_id', 'id');
