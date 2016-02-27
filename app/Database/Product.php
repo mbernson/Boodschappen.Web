@@ -8,12 +8,15 @@ class Product extends Model
     public $table = 'products';
 
     public $fillable = ['title', 'brand', 'price', 'unit_size',
+        'generic_product_id',
     'extended_attributes',
         'barcode', 'barcode_type'];
 
     public $casts = [
         'extended_attributes' => 'json',
     ];
+
+    private static $categories = null;
 
     public function prices() {
         return $this->hasMany('Boodschappen\Database\Price');
@@ -59,5 +62,57 @@ class Product extends Model
             return false;
 
         }
+    }
+
+    public function guessCategory($input = null) {
+        if(is_null($input))
+            $input = $this->title;
+
+        if(!static::$categories) {
+            echo "Fetching categories...\n";
+            static::$categories = GenericProduct::select('id', 'title')
+                ->orderBy('depth', 'asc')
+                ->limit(1000)->get();
+            echo "Done.\n";
+        }
+
+        // no shortest distance found, yet
+        $shortest = -1;
+
+        // loop through words to find the closest
+        foreach (static::$categories as $category) {
+
+            // calculate the distance between the input word,
+            // and the current word
+            $lev = levenshtein($input, $category['title']);
+
+            // check for an exact match
+            if ($lev == 0) {
+
+                // closest word is this one (exact match)
+                $closest = $category;
+                $shortest = 0;
+
+                // break out of the loop; we've found an exact match
+                break;
+            }
+
+            // if this distance is less than the next found shortest
+            // distance, OR if a next shortest word has not yet been found
+            if ($lev <= $shortest || $shortest < 0) {
+                // set the closest match, and shortest distance
+                $closest  = $category;
+                $shortest = $lev;
+            }
+        }
+
+        if ($shortest == 0) {
+            echo "Exact category found: $closest->title\n";
+        } else {
+            echo "Category may be: $closest->title\n";
+        }
+
+        return $closest;
+
     }
 }

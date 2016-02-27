@@ -31,9 +31,13 @@ class GenericProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        if(GenericProduct::create($request->only('title', 'parent_id'))) {
+            return redirect()->back(201);
+        } else {
+            return 'Some data was misssing.';
+        }
     }
 
     /**

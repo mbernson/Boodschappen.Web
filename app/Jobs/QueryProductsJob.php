@@ -61,10 +61,12 @@ class QueryProductsJob extends Job implements ShouldQueue
     private function saveOrUpdateProduct(array $data)
     {
         if(array_key_exists('barcode', $data)) {
+            /** @var Product $product */
             $product = Product::firstOrNew([
                 'barcode' => $data['barcode'],
             ]);
         } else {
+            /** @var Product $product */
             $product = Product::firstOrNew([
                 'title' => $data['title'],
                 'brand' => $data['brand'],
@@ -77,6 +79,8 @@ class QueryProductsJob extends Job implements ShouldQueue
         } else {
             echo "Adding new product $product->title\n";
         }
+        $category = $product->guessCategory($data['title']);
+        $product->generic_product_id = $category->id;
         $product->save();
         return $product;
     }
