@@ -1,35 +1,29 @@
-@if(empty($items))
+@if(empty($products))
     <div class="well text-center no-results">
         <h1>Geen resultaten</h1>
         <p>Er zijn geen resultaten gevonden die voldoen aan de gegeven criteria.</p>
     </div>
 @else
-<table class="table table-striped">
-    <thead>
-    <tr>
-        @foreach($items[0] as $k => $v)
-            <th>{{ $k }}</th>
-        @endforeach
-    </tr>
-    </thead>
-    <tbody>
-    @foreach($items as $item)
+    <table class="table table-striped">
+        <thead>
         <tr>
-            @foreach($item as $k => $v)
-                @if($k == 'id' || $k == 'title')
-                <td><a href="/products/{{ $item['id'] }}">{{ $v }}</a></td>
-                @elseif(is_string($v))
-                <td>{{ $v }}</td>
-                @elseif(is_int($v) || is_float($v))
-                <td>{{ app('\NumberFormatter')->format($v) }}</td>
-                @elseif($k == 'company_id')
-                <td>{{ companyName($v) }}</td>
-                @else
-                <td>{{ var_dump($v) }}</td>
-                @endif
-            @endforeach
+            <th>Naam</th>
+            <th>Merk</th>
+            <th>Hoeveelheid</th>
+            <th>Prijs</th>
+            <th>Supermarkt</th>
         </tr>
-    @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach($products as $product)
+            <tr>
+                <td><a href="/products/{{ $product->id }}">{{ $product->title }}</a></td>
+                <td>{{ $product->brand }}</td>
+                <td>{{ $product->amount }}</td>
+                <td>{{ $currencyFormatter->formatCurrency($product->price, "EUR") }}</td>
+                <td>{{ companyName($product->company_id) }}</td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
 @endif

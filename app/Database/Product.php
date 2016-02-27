@@ -61,14 +61,16 @@ class Product extends Model
             ->select('id')->pluck('id');
 
         $unit = $this->unit_size[0];
+        $amount = $this->unit_amount;
+        $margin = $amount / 8;
 
         $query = Product::select('id', 'title', 'brand', 'unit_amount', 'unit_size')
             ->whereIn('generic_product_id', $generic_ids)
             ->where('id', '!=', $this->id)
             ->where('unit_size', 'ilike', "%$unit%");
-        if($this->unit_amount > 0) {
-            $query->where('unit_amount', '<', $this->unit_amount + 0.1)
-                  ->where('unit_amount', '>', $this->unit_amount - 0.1);
+        if($amount > 0) {
+            $query->where('unit_amount', '<', $amount + $margin)
+                  ->where('unit_amount', '>', $amount - $margin);
         }
         return $query;
     }

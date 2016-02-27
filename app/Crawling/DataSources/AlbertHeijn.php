@@ -105,9 +105,11 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
 
             $product->extended_attributes = [
                 'category' => $api_product->categoryName,
-                'images' => $api_product->images,
-                'image' => end($api_product->images),
             ];
+            if(property_exists($api_product, 'images')) {
+                $product->extended_attributes['images'] = $api_product->images;
+                $product->extended_attributes['image'] = end($api_product->images);
+            }
             $results[] = $product;
         }
         return $results;

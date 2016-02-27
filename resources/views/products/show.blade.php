@@ -38,7 +38,7 @@
                 @include('partials.price_history_table', compact('prices', 'currencyFormatter'))
 
                 <h3>Vergelijkbare producten</h3>
-                @include('partials.products_table', ['items' => $related->toArray()])
+                @include('partials.products_table', ['products' => $related])
 
                 @if(!empty($product->extended_attributes))
                     <h3>Extra product attributen</h3>
