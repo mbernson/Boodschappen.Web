@@ -9,8 +9,6 @@ use Boodschappen\Http\Requests;
 
 class ProductsController extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      *

@@ -25,7 +25,7 @@
 
                 <h3>Producten in deze categorie</h3>
 
-                @include('partials.products_table', ['items' => $products->toArray()])
+                @include('partials.products_table', compact('products', 'currencyFormatter'))
 
                 <div class="well-lg">
                     {!! var_dump($category->toArray()) !!}
