@@ -26,8 +26,11 @@ class Product
     /** @var float */
     public $current_price;
 
-    /** @var int */
-    public $generic_product_id;
+    /** @var string */
+    public $url;
+
+    /** @var string */
+    public $category;
 
     /** @var array|\stdClass */
     public $extended_attributes;

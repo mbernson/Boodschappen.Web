@@ -34,6 +34,8 @@ class Jumbo extends BaseDataSource implements ProductDataSource
                 $product->title = $node->filter('h3')->first()->text();
                 $product->brand = $this->guessBrand($product->title);
 
+                $product->url = $node->filter('h3 a')->first()->attr('href');
+
                 $price = $node->filter('.jum-price-format')->first()->text();
                 $price = intval($price);
                 if($price > 0) $price = $price / 100;
@@ -45,6 +47,7 @@ class Jumbo extends BaseDataSource implements ProductDataSource
                 $extended_attributes = $node->attr('data-jum-product-impression');
                 if(!empty($extended_attributes)) {
                     $extended_attributes = json_decode($extended_attributes, true);
+                    $product->category = $extended_attributes['category'];
                 } else {
                     $extended_attributes = null;
                 }

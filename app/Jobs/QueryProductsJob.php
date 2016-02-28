@@ -67,16 +67,16 @@ class QueryProductsJob extends Job implements ShouldQueue
      */
     private function saveOrUpdateProduct(DomainProduct $domain_product)
     {
-        if($domain_product->barcode != null) {
+        if($domain_product->sku != null) {
+            /** @var Product $product */
+            $product = Product::firstOrNew([
+                'sku' => $domain_product->sku,
+            ]);
+        } elseif($domain_product->barcode != null) {
             /** @var Product $product */
             $product = Product::firstOrNew([
                 'barcode_type' => $domain_product->barcode->type,
                 'barcode' => $domain_product->barcode->value,
-            ]);
-        } elseif($domain_product->sku != null) {
-            /** @var Product $product */
-            $product = Product::firstOrNew([
-                'sku' => $domain_product->sku,
             ]);
         } else {
             /** @var Product $product */
@@ -86,6 +86,7 @@ class QueryProductsJob extends Job implements ShouldQueue
                 'unit_size' => $domain_product->unit_size,
             ]);
         }
+
         $product->fill((array) $domain_product);
         if($product->exists) {
             echo "Updating product $product->title\n";
@@ -93,7 +94,8 @@ class QueryProductsJob extends Job implements ShouldQueue
             echo "Adding new product $product->title\n";
         }
 
-        $category = $product->guessCategory($domain_product->title, $this->categories);
+        $categoryInput = empty($domain_product->category) ? $domain_product->title : $domain_product->category;
+        $category = $product->guessCategory($categoryInput, $this->categories);
 
         $product->generic_product_id = $category->id;
         $product->save();

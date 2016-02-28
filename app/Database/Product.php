@@ -17,6 +17,7 @@ class Product extends Model
         'sku',
         'barcode', 'barcode_type',
         'extended_attributes',
+        'url',
     ];
 
     public $guarded = [

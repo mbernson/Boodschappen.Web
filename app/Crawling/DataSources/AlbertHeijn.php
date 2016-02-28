@@ -93,6 +93,8 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
             $product = new Product();
             $api_product = $item->_embedded->productCard->_embedded->product;
             $product->title = str_replace('­', '', $api_product->description); // FIXME
+            $product->url = "http://ah.nl".stripslashes($item->_embedded->productCard->navItem->link->href);
+            $product->category = $api_product->categoryName;
 
             if(property_exists($api_product, 'brandName'))
                 $product->brand = $api_product->brandName;

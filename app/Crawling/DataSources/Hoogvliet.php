@@ -35,6 +35,7 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
                 $product = new Product();
                 $product->title = trim($node->filter('.ws-product-title .hv-brand + div')->first()->text());
                 $product->brand = $node->filter('.hv-brand')->first()->text();
+                $product->url = $node->filter('.kor-product-link')->first()->attr('href');
 
                 $price = $node->filter('.kor-product-sale-price')->first()->text();
                 $product->current_price = floatval(filter_whitespace($price));
