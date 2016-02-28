@@ -6,7 +6,9 @@
             <div class="col-md-10 col-md-offset-1">
                 <h3>Producten</h3>
                 <form>
-                    <input type="search" name="q" placeholder="Zoek een product..." />
+                    <input type="search" name="q" placeholder="Zoek een product..." value="{{ Request::has('q') ? Request::get('q') : '' }}" />
+                    <input type="checkbox" name="update" id="update" value="1" />
+                    <label for="update">Update</label>
                     <input type="submit" value="Zoeken" />
                 </form>
                 <p>Totaal: {{ $count }} producten</p>

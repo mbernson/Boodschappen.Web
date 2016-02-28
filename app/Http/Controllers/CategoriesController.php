@@ -64,7 +64,12 @@ class CategoriesController extends Controller
         $products = Product::
             select('id', 'title', 'brand', 'price', 'company_id', 'unit_amount', 'unit_size')
             ->join('prices', 'prices.product_id', '=', 'id')
-            ->whereIn('generic_product_id', $generic_ids)->get();
+            ->whereIn('generic_product_id', $generic_ids)
+            ->orderBy('unit_size', 'asc')
+            ->orderBy('unit_amount', 'asc')
+            ->orderBy('bulk', 'asc')
+            ->orderBy('price', 'asc')
+	    ->get();
         return view('categories.show')
             ->withProducts($products)
             ->withCategory($category);

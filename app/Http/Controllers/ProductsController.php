@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use Boodschappen\Http\Requests;
 
+use Auth;
+
 class ProductsController extends Controller
 {
     /**
@@ -23,6 +25,9 @@ class ProductsController extends Controller
             ->orderBy('products.created_at', 'desc');
 
         if($request->has('q')) {
+		if($request->has('update')) {
+			$this->dispatchSearch($request->get('q'));
+		}
             $query = join('', ['%', $request->get('q'), '%']);
             $products->where('title', 'ilike', $query)
                 ->orWhere('brand', 'ilike', $query);
@@ -32,6 +37,19 @@ class ProductsController extends Controller
         return view('products.index')
             ->withProducts($products)
             ->withCount(Product::count());
+    }
+
+
+    private function dispatchSearch($query) {
+        $product_sources = [
+            \Boodschappen\Crawling\DataSources\Hoogvliet::class,
+            \Boodschappen\Crawling\DataSources\Jumbo::class,
+            \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
+        ];
+        foreach($product_sources as $klass) {
+            $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);
+            $this->dispatch($job);
+        }
     }
 
     /**
