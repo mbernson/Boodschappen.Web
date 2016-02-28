@@ -2,7 +2,7 @@
 
 namespace Boodschappen\Console\Commands;
 
-use Boodschappen\Database\GenericProduct;
+use Boodschappen\Database\Category;
 use Illuminate\Console\Command;
 
 class AddCategoryCommand extends Command
@@ -37,15 +37,15 @@ class AddCategoryCommand extends Command
      */
     public function handle()
     {
-        $category = new GenericProduct();
+        $category = new Category();
         $category->title = $this->argument('title');
         $parent_name = $this->argument('parent');
 
         if(is_int($parent_name)) {
-            $parent = GenericProduct::find($parent_name);
+            $parent = Category::find($parent_name);
             $category->parent_id = $parent->id;
         } else if(is_string($parent_name)) {
-            $parent = GenericProduct::where('title', 'ilike', "%$parent_name%")->first();
+            $parent = Category::where('title', 'ilike', "%$parent_name%")->first();
             $category->parent_id = $parent->id;
         } else {
             $category->parent_id = 0;

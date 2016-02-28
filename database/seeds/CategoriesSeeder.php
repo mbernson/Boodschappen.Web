@@ -1,9 +1,9 @@
 <?php
 
-use Boodschappen\Database\GenericProduct;
+use Boodschappen\Database\Category;
 use Illuminate\Database\Seeder;
 
-class GenericProductsSeeder extends Seeder
+class CategoriesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -26,6 +26,6 @@ class GenericProductsSeeder extends Seeder
                 'depth' => 0,
             ],
         ];
-        GenericProduct::insert($roots);
+        Category::insert($roots);
     }
 }

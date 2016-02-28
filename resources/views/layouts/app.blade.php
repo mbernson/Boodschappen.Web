@@ -40,16 +40,17 @@
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    Laravel
+                    Boodschappen
                 </a>
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/home') }}">Home</a></li>
+                    <li><a href="{{ url('/') }}">Zoeken</a></li>
                     <li><a href="{{ url('/products') }}">Producten</a></li>
-                    <li><a href="{{ url('/generic_products') }}">Categorieën</a></li>
+                    <li><a href="{{ url('/categories') }}">Categorieën</a></li>
+                    <li><a href="{{ url('/lists') }}">Lijstjes</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->

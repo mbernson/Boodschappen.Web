@@ -1,15 +1,14 @@
 <?php
 
-namespace Boodschappen\Http\Controllers\Management;
+namespace Boodschappen\Http\Controllers;
 
-use Boodschappen\Database\GenericProduct;
+use Boodschappen\Database\Category;
 use Boodschappen\Database\Product;
 use Illuminate\Http\Request;
 
 use Boodschappen\Http\Requests;
-use Boodschappen\Http\Controllers\Controller;
 
-class GenericProductsController extends Controller
+class CategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +17,11 @@ class GenericProductsController extends Controller
      */
     public function index()
     {
-        $count = GenericProduct::count();
-        $products = GenericProduct::select('id', 'title')
+        $count = Category::count();
+        $products = Category::select('id', 'title')
             ->whereIn('depth', [0])->get();
 
-        return view('generic_products.index')
+        return view('categories.index')
             ->withProducts($products)->withCount($count);
     }
 
@@ -33,7 +32,7 @@ class GenericProductsController extends Controller
      */
     public function create(Request $request)
     {
-        if(GenericProduct::create($request->only('title', 'parent_id'))) {
+        if(Category::create($request->only('title', 'parent_id'))) {
             return redirect()->back(201);
         } else {
             return 'Some data was misssing.';
@@ -59,16 +58,16 @@ class GenericProductsController extends Controller
      */
     public function show($id)
     {
-        $product = GenericProduct::find($id);
-        $generic_ids = \DB::table(\DB::raw("generic_products_subtree($product->id)"))
+        $category = Category::find($id);
+        $generic_ids = \DB::table(\DB::raw("generic_products_subtree($category->id)"))
             ->select('id')->pluck('id');
         $products = Product::
             select('id', 'title', 'brand', 'price', 'company_id', 'unit_amount', 'unit_size')
             ->join('prices', 'prices.product_id', '=', 'id')
             ->whereIn('generic_product_id', $generic_ids)->get();
-        return view('generic_products.show')
+        return view('categories.show')
             ->withProducts($products)
-            ->withProduct($product);
+            ->withCategory($category);
     }
 
     /**

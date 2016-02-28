@@ -37,8 +37,8 @@ class Product extends Model
         return $this->hasMany('Boodschappen\Database\Price');
     }
 
-    public function genericProduct() {
-        return $this->belongsTo('Boodschappen\Database\GenericProduct');
+    public function category() {
+        return $this->belongsTo('Boodschappen\Database\Category', 'generic_product_id');
     }
 
     public function getAmountAttribute() {
@@ -56,7 +56,7 @@ class Product extends Model
     }
 
     public function comparableProducts() {
-        $gid = $this->genericProduct->id;
+        $gid = $this->category->id;
         $generic_ids = DB::table(DB::raw("generic_products_subtree($gid)"))
             ->select('id')->pluck('id');
 
@@ -129,17 +129,13 @@ class Product extends Model
         }
     }
 
-    public function categoryFromGenericProduct(GenericProduct $genericProduct) {
-        return $this->guessCategory($genericProduct->title, $genericProduct->subcategories());
-    }
-
     public function guessCategory($input = null, array $categories = null) {
         if(is_null($input))
             $input = $this->title;
 
         if(!static::$categories) {
             echo "Caching categories...\n";
-            static::$categories = GenericProduct::find(1)->subcategories();
+            static::$categories = Category::find(1)->subcategories();
             echo "Done.\n";
         }
 

@@ -3,7 +3,7 @@
 namespace Boodschappen\Jobs;
 
 use Boodschappen\Crawling\ProductDataSource;
-use Boodschappen\Database\GenericProduct;
+use Boodschappen\Database\Category;
 use Boodschappen\Database\Product;
 use Boodschappen\Domain\Product as DomainProduct;
 use Boodschappen\Jobs\Job;
@@ -17,7 +17,7 @@ class QueryProductsJob extends Job implements ShouldQueue
 
     private $adapter;
     private $query;
-    /** @var GenericProduct[]|null */
+    /** @var Category[]|null */
     private $categories = null;
 
     /**
@@ -29,8 +29,8 @@ class QueryProductsJob extends Job implements ShouldQueue
     {
         $this->adapter = $adapter;
         $this->query = $query;
-        /** @var GenericProduct $category */
-        $category = GenericProduct::where('title', 'ilike', "$query")->first();
+        /** @var Category $category */
+        $category = Category::where('title', 'ilike', $query)->first();
         if($category) {
             $this->categories = $category->subcategories();
         }

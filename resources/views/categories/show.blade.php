@@ -4,19 +4,18 @@
     <div class="container">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
-                <h2>Product</h2>
-                <h1><a href="">{{ $product->title }}</a></h1>
+                <h1><a href="">{{ $category->title }}</a></h1>
 
                 <h3>Structuur</h3>
                 <ul>
-                    <li><a href="{{ $product->parent->id }}">{{ $product->parent->title }}</a>
+                    <li><a href="{{ $category->parent->id }}">{{ $category->parent->title }}</a>
                         <ul>
-                            @foreach($product->parent->children as $cat)
+                            @foreach($category->parent->children as $cat)
                             <li>
-                                @if($cat->id == $product->id)
-                                    <strong> <a href="/generic_products/{{ $cat->id }}">{{ $cat->title }}</a> </strong>
+                                @if($cat->id == $category->id)
+                                    <strong>{{ $cat->title }}</strong>
                                 @else
-                                     <a href="/generic_products/{{ $cat->id }}">{{ $cat->title }}</a>
+                                     <a href="/categories/{{ $cat->id }}">{{ $cat->title }}</a>
                                 @endif
                             </li>
                             @endforeach
@@ -29,7 +28,7 @@
                 @include('partials.products_table', ['items' => $products->toArray()])
 
                 <div class="well-lg">
-                    {!! var_dump($product->toArray()) !!}
+                    {!! var_dump($category->toArray()) !!}
                 </div>
             </div>
         </div>

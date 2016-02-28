@@ -1,18 +1,18 @@
 <?php
-use Boodschappen\Database\GenericProduct;
+use Boodschappen\Database\Category;
 
 /**
  * @param $title
  * @param $parent
  */
 function cat($title, $parent) {
-    $category = new GenericProduct();
+    $category = new Category();
     $category->title = $title;
 
     if(is_int($parent)) {
         $category->parent_id = $parent;
     } else if(is_string($parent)) {
-        $category->parent_id = GenericProduct::where('title', 'ilike', "%$parent%")->first()->id;
+        $category->parent_id = Category::where('title', 'ilike', "%$parent%")->first()->id;
     } else {
         $category->parent_id = 0;
         $category->depth = 0;

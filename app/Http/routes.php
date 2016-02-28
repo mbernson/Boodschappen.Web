@@ -36,9 +36,8 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/home', 'HomeController@index');
 
-//    Route::get('/', 'GenericProductsController@index');
-    Route::resource('products', 'Management\ProductsController');
-    Route::resource('generic_products', 'Management\GenericProductsController');
+    Route::resource('products', 'ProductsController');
+    Route::resource('categories', 'CategoriesController');
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Api'], function() {

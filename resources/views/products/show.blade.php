@@ -12,7 +12,7 @@
                 <table class="table table-striped">
                     <tr>
                         <th>Product categorie</th>
-                        <td><a href="/generic_products/{{ $product->genericProduct->id }}">{{ $product->genericProduct->title }}</a></td>
+                        <td><a href="/categories/{{ $product->category->id }}">{{ $product->category->title }}</a></td>
                     </tr>
                     <tr>
                         <th>Hoeveelheid</th>

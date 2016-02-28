@@ -1,24 +1,14 @@
 <?php
 
-namespace Boodschappen\Http\Controllers\Management;
+namespace Boodschappen\Http\Controllers;
 
 use Boodschappen\Database\Product;
 use Illuminate\Http\Request;
 
 use Boodschappen\Http\Requests;
-use Boodschappen\Http\Controllers\Controller;
-use NumberFormatter;
 
 class ProductsController extends Controller
 {
-    /**
-     * ProductsController constructor.
-     */
-    public function __construct()
-    {
-        $this->currencyFormatter = new NumberFormatter('nl_NL', NumberFormatter::CURRENCY);
-        view()->share('currencyFormatter', $this->currencyFormatter);
-    }
 
 
     /**
