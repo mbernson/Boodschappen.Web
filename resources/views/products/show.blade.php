@@ -22,6 +22,12 @@
                         <th>SKU</th>
                         <td>{{ $product->sku }}</td>
                     </tr>
+                    @if($product->url)
+                    <tr>
+                        <th>Link naar productpagina</th>
+                        <td><a href="{{ $product->url }}" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-link"></span> {{ $product->url }}</a></td>
+                    </tr>
+		    @endif
                     <!--
                     <tr>
                         <th>Toegevoegd op</th>
