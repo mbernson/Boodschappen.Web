@@ -45,7 +45,7 @@ class AddCategoryCommand extends Command
             $parent = Category::find($parent_name);
             $category->parent_id = $parent->id;
         } else if(is_string($parent_name)) {
-            $parent = Category::where('title', 'ilike', "%$parent_name%")->first();
+            $parent = Category::where('title', 'ilike', "$parent_name")->first();
             $category->parent_id = $parent->id;
         } else {
             $category->parent_id = 0;
