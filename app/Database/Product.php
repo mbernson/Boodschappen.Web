@@ -68,7 +68,7 @@ class Product extends Model
         $query = Product::select('id', 'title', 'brand', 'unit_amount', 'unit_size')
             ->whereIn('generic_product_id', $generic_ids)
             ->where('id', '!=', $this->id)
-            ->where('unit_size', 'ilike', "%$unit%");
+            ->where('unit_size', 'ilike', "$unit%");
         if($amount > 0) {
             $query->where('unit_amount', '<', $amount + $margin)
                   ->where('unit_amount', '>', $amount - $margin);
@@ -82,6 +82,8 @@ class Product extends Model
             if (is_array($attrs)) {
                 if (array_key_exists('image', $attrs) && is_string($attrs['image'])) {
                     return '<img src="' . $attrs['image'] . '"/>';
+                } else if (array_key_exists('image', $attrs) && is_array($attrs['image'])) {
+                    return '<img src="' . $attrs['image']['link']['href'] . '"/>';
                 } elseif (array_key_exists('images', $attrs)) {
                     $images = $attrs['images'];
                     return '<img src="' . $images[0] . '"/>';

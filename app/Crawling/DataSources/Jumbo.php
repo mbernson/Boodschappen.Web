@@ -49,8 +49,9 @@ class Jumbo extends BaseDataSource implements ProductDataSource
                     $extended_attributes = json_decode($extended_attributes, true);
                     $product->category = $extended_attributes['category'];
                 } else {
-                    $extended_attributes = null;
+                    $extended_attributes = [];
                 }
+                $extended_attributes['image'] = $node->filter('img')->first()->attr('data-jum-src');
                 $product->extended_attributes = $extended_attributes;
 
                 return $product;
