@@ -130,13 +130,16 @@ class Product extends Model
         }
     }
 
+    /**
+     * @param null $input
+     * @param array|null $categories
+     * @return \stdClass
+     */
     public function guessCategory($input = null, array $categories = null) {
-        if(is_null($input))
-            $input = $this->title;
-
         if(!static::$categories) {
             echo "Caching categories...\n";
-            static::$categories = Category::find(1)->subcategories();
+            static::$categories = Category::find(1)
+                ->subcategories()->orderBy('depth', 'desc')->get();
             echo "Done.\n";
         }
 
@@ -144,43 +147,83 @@ class Product extends Model
             $categories = static::$categories;
         }
 
+        if(is_null($input)) {
+            $input = $this->title;
+        }
+
+        try {
+//            $this->guessExactMatch($input, $categories);
+            $guessed = $this->guessLevenshtein($input, $categories);
+            echo "Guessed category: $guessed->title\n";
+            return $guessed;
+        } catch(CategoryWasFound $result) {
+            echo "Category was matched: {$result->category->title}\n";
+            return $result->category;
+        }
+    }
+
+    /**
+     * @param string $input
+     * @param array $categories
+     * @return \stdClass
+     * @throws CategoryWasFound
+     */
+    private function guessLevenshtein($input, array $categories) {
         // no shortest distance found, yet
         $shortest = -1;
+        $closest = null;
+        $parts = preg_split('/[\s,\.]+/', $input);
 
         // loop through words to find the closest
         foreach ($categories as $category) {
+            foreach($parts as $word) {
 
-            // calculate the distance between the input word,
-            // and the current word
-            $lev = levenshtein($input, $category->title);
+                // calculate the distance between the input word,
+                // and the current word
+                $lev = levenshtein($category->title, $word);
 
-            // check for an exact match
-            if ($lev == 0) { // } || str_contains(strtolower($category->title), strtolower($input))) {
+                // check for an exact match
+                if ($lev <= 2) {
 
-                // closest word is this one (exact match)
-                $closest = $category;
-                $shortest = 0;
+                    // closest word is this one (exact match)
+                    $closest = $category;
+                    $shortest = 0;
+                    throw new CategoryWasFound($closest);
+                }
 
-                // break out of the loop; we've found an exact match
-                break;
+                // if this distance is less than the next found shortest
+                // distance, OR if a next shortest word has not yet been found
+                if ($lev <= $shortest || $shortest < 0) {
+                    // set the closest match, and shortest distance
+                    $closest = $category;
+                    $shortest = $lev;
+                }
             }
-
-            // if this distance is less than the next found shortest
-            // distance, OR if a next shortest word has not yet been found
-            if ($lev <= $shortest || $shortest < 0) {
-                // set the closest match, and shortest distance
-                $closest  = $category;
-                $shortest = $lev;
-            }
-        }
-
-        if ($shortest == 0) {
-            echo "Exact category found: $closest->title\n";
-        } else {
-            echo "Category may be: $closest->title\n";
         }
 
         return $closest;
+    }
 
+    /**
+     * @param string $input
+     * @param array $categories
+     * @throws CategoryWasFound
+     */
+    private function guessExactMatch($input, array $categories) {
+        $parts = preg_split('/[\s,\.]+/', $input);
+
+        foreach($categories as $category) {
+            if(in_array($category->title, $parts)) {
+                throw new CategoryWasFound($category);
+            }
+        }
+    }
+}
+
+final class CategoryWasFound extends \Exception {
+    public $category;
+
+    public function __construct(\stdClass $category) {
+        $this->category = $category;
     }
 }

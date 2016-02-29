@@ -32,7 +32,7 @@ class QueryProductsJob extends Job implements ShouldQueue
         /** @var Category $category */
         $category = Category::where('title', 'ilike', $query)->first();
         if($category) {
-            $this->categories = $category->subcategories();
+            $this->categories = $category->subcategories()->orderBy('depth', 'desc')->get();
         }
     }
 
@@ -94,11 +94,21 @@ class QueryProductsJob extends Job implements ShouldQueue
             echo "Adding new product $product->title\n";
         }
 
+        if(!empty($domain_product->category)) {
+            try {
+                Category::create([
+                    'title' => $domain_product->category,
+                    'parent_id' => 1,
+                ]);
+            } catch(\Exception $e) {}
+        }
+
         $categoryInput = empty($domain_product->category) ? $domain_product->title : $domain_product->category;
         $category = $product->guessCategory($categoryInput, $this->categories);
 
         $product->generic_product_id = $category->id;
         $product->save();
+        echo "\n";
 
         return $product;
     }

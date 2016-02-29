@@ -1,20 +1,28 @@
 <?php namespace Boodschappen\Database;
 
-use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Category extends Model
 {
     public $table = 'generic_products';
     public $timestamps = false;
 
+    public $fillable = [
+        'parent_id',
+        'title',
+    ];
+
     public function subcategoryIds() {
         return DB::table(DB::raw("generic_products_subtree($this->id)"))
             ->select('id')->pluck('id');
     }
 
+    /**
+     * @return \Illuminate\Database\Query\Builder
+     */
     public function subcategories() {
-        return DB::table(DB::raw("generic_products_full_subtree($this->id)"))->get();
+        return DB::table(DB::raw("generic_products_full_subtree($this->id)"));
     }
 
     public function children() {

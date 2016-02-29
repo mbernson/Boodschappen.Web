@@ -41,11 +41,12 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Api'], function() {
+    Route::get('/products', 'ProductsController@index');
+    Route::get('/products/{id}', 'ProductsController@show');
+
     Route::post('/products', 'ProductsController@add');
     Route::put('/products/{barcode}', 'ProductsController@update');
 
     Route::post('/scans', 'ProductsController@add');
-
-    Route::get('/products/{barcode}', 'ProductsController@info');
 
 });
