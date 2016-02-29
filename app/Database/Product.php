@@ -152,7 +152,7 @@ class Product extends Model
         }
 
         try {
-//            $this->guessExactMatch($input, $categories);
+            $this->guessExactMatch($input, $categories);
             $guessed = $this->guessLevenshtein($input, $categories);
             echo "Guessed category: $guessed->title\n";
             return $guessed;
@@ -161,6 +161,8 @@ class Product extends Model
             return $result->category;
         }
     }
+
+    private static $parts_regex = '/[\s,\.\/]+/';
 
     /**
      * @param string $input
@@ -172,7 +174,7 @@ class Product extends Model
         // no shortest distance found, yet
         $shortest = -1;
         $closest = null;
-        $parts = preg_split('/[\s,\.]+/', $input);
+        $parts = preg_split(static::$parts_regex, $input);
 
         // loop through words to find the closest
         foreach ($categories as $category) {
@@ -183,7 +185,7 @@ class Product extends Model
                 $lev = levenshtein($category->title, $word);
 
                 // check for an exact match
-                if ($lev <= 2) {
+                if ($lev == 0) {
 
                     // closest word is this one (exact match)
                     $closest = $category;
@@ -210,7 +212,7 @@ class Product extends Model
      * @throws CategoryWasFound
      */
     private function guessExactMatch($input, array $categories) {
-        $parts = preg_split('/[\s,\.]+/', $input);
+        $parts = preg_split(static::$parts_regex, $input);
 
         foreach($categories as $category) {
             if(in_array($category->title, $parts)) {

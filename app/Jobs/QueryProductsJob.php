@@ -94,15 +94,6 @@ class QueryProductsJob extends Job implements ShouldQueue
             echo "Adding new product $product->title\n";
         }
 
-        if(!empty($domain_product->category)) {
-            try {
-                Category::create([
-                    'title' => $domain_product->category,
-                    'parent_id' => 1,
-                ]);
-            } catch(\Exception $e) {}
-        }
-
         $categoryInput = empty($domain_product->category) ? $domain_product->title : $domain_product->category;
         $category = $product->guessCategory($categoryInput, $this->categories);
 
