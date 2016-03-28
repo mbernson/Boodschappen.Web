@@ -10,14 +10,14 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -26,7 +26,7 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 SET search_path = public, pg_catalog;
 
 --
--- Name: barcode_type; Type: TYPE; Schema: public; Owner: -
+-- Name: barcode_type; Type: TYPE; Schema: public; Owner: boodschappen
 --
 
 CREATE TYPE barcode_type AS ENUM (
@@ -36,8 +36,10 @@ CREATE TYPE barcode_type AS ENUM (
 );
 
 
+ALTER TYPE public.barcode_type OWNER TO boodschappen;
+
 --
--- Name: generic_products_full_subtree(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: generic_products_full_subtree(integer); Type: FUNCTION; Schema: public; Owner: boodschappen
 --
 
 CREATE FUNCTION generic_products_full_subtree(root_id integer) RETURNS TABLE(id integer, title character varying, parent_id integer, depth integer, created_at timestamp without time zone)
@@ -59,8 +61,10 @@ END;
 $$;
 
 
+ALTER FUNCTION public.generic_products_full_subtree(root_id integer) OWNER TO boodschappen;
+
 --
--- Name: generic_products_subtree(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: generic_products_subtree(integer); Type: FUNCTION; Schema: public; Owner: boodschappen
 --
 
 CREATE FUNCTION generic_products_subtree(root_id integer) RETURNS TABLE(id integer, parent_id integer)
@@ -82,8 +86,10 @@ END;
 $$;
 
 
+ALTER FUNCTION public.generic_products_subtree(root_id integer) OWNER TO boodschappen;
+
 --
--- Name: set_depth__column(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: set_depth__column(); Type: FUNCTION; Schema: public; Owner: boodschappen
 --
 
 CREATE FUNCTION set_depth__column() RETURNS trigger
@@ -96,8 +102,10 @@ END;
 $$;
 
 
+ALTER FUNCTION public.set_depth__column() OWNER TO boodschappen;
+
 --
--- Name: set_depth_column(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: set_depth_column(); Type: FUNCTION; Schema: public; Owner: boodschappen
 --
 
 CREATE FUNCTION set_depth_column() RETURNS trigger
@@ -110,8 +118,10 @@ END;
 $$;
 
 
+ALTER FUNCTION public.set_depth_column() OWNER TO boodschappen;
+
 --
--- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: boodschappen
 --
 
 CREATE FUNCTION update_updated_at_column() RETURNS trigger
@@ -124,12 +134,14 @@ END;
 $$;
 
 
+ALTER FUNCTION public.update_updated_at_column() OWNER TO boodschappen;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: companies; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: companies; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE companies (
@@ -141,8 +153,10 @@ CREATE TABLE companies (
 );
 
 
+ALTER TABLE public.companies OWNER TO boodschappen;
+
 --
--- Name: companies_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: companies_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE companies_id_seq
@@ -153,15 +167,17 @@ CREATE SEQUENCE companies_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.companies_id_seq OWNER TO boodschappen;
+
 --
--- Name: companies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: companies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE companies_id_seq OWNED BY companies.id;
 
 
 --
--- Name: failed_jobs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: failed_jobs; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE failed_jobs (
@@ -173,8 +189,10 @@ CREATE TABLE failed_jobs (
 );
 
 
+ALTER TABLE public.failed_jobs OWNER TO boodschappen;
+
 --
--- Name: failed_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: failed_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE failed_jobs_id_seq
@@ -185,15 +203,17 @@ CREATE SEQUENCE failed_jobs_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.failed_jobs_id_seq OWNER TO boodschappen;
+
 --
--- Name: failed_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: failed_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE failed_jobs_id_seq OWNED BY failed_jobs.id;
 
 
 --
--- Name: generic_products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: generic_products; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE generic_products (
@@ -205,8 +225,10 @@ CREATE TABLE generic_products (
 );
 
 
+ALTER TABLE public.generic_products OWNER TO boodschappen;
+
 --
--- Name: generic_products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: generic_products_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE generic_products_id_seq
@@ -217,15 +239,17 @@ CREATE SEQUENCE generic_products_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.generic_products_id_seq OWNER TO boodschappen;
+
 --
--- Name: generic_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: generic_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE generic_products_id_seq OWNED BY generic_products.id;
 
 
 --
--- Name: migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: migrations; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE migrations (
@@ -234,8 +258,10 @@ CREATE TABLE migrations (
 );
 
 
+ALTER TABLE public.migrations OWNER TO boodschappen;
+
 --
--- Name: password_resets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: password_resets; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE password_resets (
@@ -245,8 +271,24 @@ CREATE TABLE password_resets (
 );
 
 
+ALTER TABLE public.password_resets OWNER TO boodschappen;
+
 --
--- Name: prices; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: price_changes; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
+--
+
+CREATE TABLE price_changes (
+    id bigint,
+    title character varying(255),
+    prices numeric[],
+    last_updated timestamp without time zone
+);
+
+
+ALTER TABLE public.price_changes OWNER TO boodschappen;
+
+--
+-- Name: prices; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE prices (
@@ -258,8 +300,10 @@ CREATE TABLE prices (
 );
 
 
+ALTER TABLE public.prices OWNER TO boodschappen;
+
 --
--- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: products; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE products (
@@ -275,12 +319,15 @@ CREATE TABLE products (
     barcode_type barcode_type,
     sku text NOT NULL,
     unit_amount numeric(8,3) DEFAULT 0 NOT NULL,
-    bulk integer DEFAULT 1 NOT NULL
+    bulk integer DEFAULT 1 NOT NULL,
+    url character varying(255)
 );
 
 
+ALTER TABLE public.products OWNER TO boodschappen;
+
 --
--- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE products_id_seq
@@ -291,15 +338,17 @@ CREATE SEQUENCE products_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.products_id_seq OWNER TO boodschappen;
+
 --
--- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE products_id_seq OWNED BY products.id;
 
 
 --
--- Name: scans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: scans; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE scans (
@@ -311,8 +360,10 @@ CREATE TABLE scans (
 );
 
 
+ALTER TABLE public.scans OWNER TO boodschappen;
+
 --
--- Name: scans_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: scans_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE scans_id_seq
@@ -323,15 +374,65 @@ CREATE SEQUENCE scans_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.scans_id_seq OWNER TO boodschappen;
+
 --
--- Name: scans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: scans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE scans_id_seq OWNED BY scans.id;
 
 
 --
--- Name: shopping_list_has_product; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: schedule_crawl_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
+--
+
+CREATE SEQUENCE schedule_crawl_seq
+    START WITH 1
+    INCREMENT BY 2
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.schedule_crawl_seq OWNER TO boodschappen;
+
+--
+-- Name: schedule; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
+--
+
+CREATE TABLE schedule (
+    id integer NOT NULL,
+    query text NOT NULL,
+    last_crawled_at timestamp without time zone DEFAULT ('2016-02-29 07:00:00'::timestamp without time zone + ('00:01:00'::interval * (nextval('schedule_crawl_seq'::regclass))::double precision)) NOT NULL
+);
+
+
+ALTER TABLE public.schedule OWNER TO boodschappen;
+
+--
+-- Name: schedule_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
+--
+
+CREATE SEQUENCE schedule_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.schedule_id_seq OWNER TO boodschappen;
+
+--
+-- Name: schedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
+--
+
+ALTER SEQUENCE schedule_id_seq OWNED BY schedule.id;
+
+
+--
+-- Name: shopping_list_has_product; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE shopping_list_has_product (
@@ -341,8 +442,10 @@ CREATE TABLE shopping_list_has_product (
 );
 
 
+ALTER TABLE public.shopping_list_has_product OWNER TO boodschappen;
+
 --
--- Name: shopping_lists; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: shopping_lists; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE shopping_lists (
@@ -355,8 +458,10 @@ CREATE TABLE shopping_lists (
 );
 
 
+ALTER TABLE public.shopping_lists OWNER TO boodschappen;
+
 --
--- Name: shopping_lists_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: shopping_lists_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE shopping_lists_id_seq
@@ -367,15 +472,17 @@ CREATE SEQUENCE shopping_lists_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.shopping_lists_id_seq OWNER TO boodschappen;
+
 --
--- Name: shopping_lists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: shopping_lists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE shopping_lists_id_seq OWNED BY shopping_lists.id;
 
 
 --
--- Name: stores; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: stores; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE stores (
@@ -388,8 +495,10 @@ CREATE TABLE stores (
 );
 
 
+ALTER TABLE public.stores OWNER TO boodschappen;
+
 --
--- Name: stores_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: stores_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE stores_id_seq
@@ -400,15 +509,17 @@ CREATE SEQUENCE stores_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.stores_id_seq OWNER TO boodschappen;
+
 --
--- Name: stores_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: stores_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE stores_id_seq OWNED BY stores.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE TABLE users (
@@ -422,8 +533,10 @@ CREATE TABLE users (
 );
 
 
+ALTER TABLE public.users OWNER TO boodschappen;
+
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
 --
 
 CREATE SEQUENCE users_id_seq
@@ -434,71 +547,80 @@ CREATE SEQUENCE users_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.users_id_seq OWNER TO boodschappen;
+
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
 --
 
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY failed_jobs ALTER COLUMN id SET DEFAULT nextval('failed_jobs_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY generic_products ALTER COLUMN id SET DEFAULT nextval('generic_products_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY scans ALTER COLUMN id SET DEFAULT nextval('scans_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
+--
+
+ALTER TABLE ONLY schedule ALTER COLUMN id SET DEFAULT nextval('schedule_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY shopping_lists ALTER COLUMN id SET DEFAULT nextval('shopping_lists_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY stores ALTER COLUMN id SET DEFAULT nextval('stores_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Name: companies_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: companies_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY companies
@@ -506,7 +628,7 @@ ALTER TABLE ONLY companies
 
 
 --
--- Name: companies_title_unique; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: companies_title_unique; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY companies
@@ -514,7 +636,7 @@ ALTER TABLE ONLY companies
 
 
 --
--- Name: failed_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: failed_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY failed_jobs
@@ -522,7 +644,7 @@ ALTER TABLE ONLY failed_jobs
 
 
 --
--- Name: generic_products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: generic_products_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY generic_products
@@ -530,7 +652,7 @@ ALTER TABLE ONLY generic_products
 
 
 --
--- Name: generic_products_title_unique; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: generic_products_title_unique; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY generic_products
@@ -538,7 +660,7 @@ ALTER TABLE ONLY generic_products
 
 
 --
--- Name: prices_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: prices_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY prices
@@ -546,7 +668,7 @@ ALTER TABLE ONLY prices
 
 
 --
--- Name: products_barcode_unique; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: products_barcode_unique; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY products
@@ -554,7 +676,7 @@ ALTER TABLE ONLY products
 
 
 --
--- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY products
@@ -562,7 +684,7 @@ ALTER TABLE ONLY products
 
 
 --
--- Name: products_sku_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: products_sku_key; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY products
@@ -570,7 +692,7 @@ ALTER TABLE ONLY products
 
 
 --
--- Name: scans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: scans_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY scans
@@ -578,7 +700,15 @@ ALTER TABLE ONLY scans
 
 
 --
--- Name: shopping_list_has_product_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: schedule_query_key; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
+--
+
+ALTER TABLE ONLY schedule
+    ADD CONSTRAINT schedule_query_key UNIQUE (query);
+
+
+--
+-- Name: shopping_list_has_product_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY shopping_list_has_product
@@ -586,7 +716,7 @@ ALTER TABLE ONLY shopping_list_has_product
 
 
 --
--- Name: shopping_lists_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: shopping_lists_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY shopping_lists
@@ -594,7 +724,7 @@ ALTER TABLE ONLY shopping_lists
 
 
 --
--- Name: stores_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY stores
@@ -602,7 +732,7 @@ ALTER TABLE ONLY stores
 
 
 --
--- Name: users_email_unique; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users_email_unique; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -610,7 +740,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -618,63 +748,82 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: idx_product_barcode_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: idx_product_barcode_type; Type: INDEX; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE INDEX idx_product_barcode_type ON products USING btree (barcode_type);
 
 
 --
--- Name: idx_sku; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: idx_sku; Type: INDEX; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE INDEX idx_sku ON products USING btree (sku);
 
 
 --
--- Name: password_resets_email_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: password_resets_email_index; Type: INDEX; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE INDEX password_resets_email_index ON password_resets USING btree (email);
 
 
 --
--- Name: password_resets_token_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: password_resets_token_index; Type: INDEX; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE INDEX password_resets_token_index ON password_resets USING btree (token);
 
 
 --
--- Name: products_barcode_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_barcode_index; Type: INDEX; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 CREATE INDEX products_barcode_index ON products USING btree (barcode);
 
 
 --
--- Name: set_generic_products_depth_insert; Type: TRIGGER; Schema: public; Owner: -
+-- Name: _RETURN; Type: RULE; Schema: public; Owner: boodschappen
+--
+
+CREATE RULE "_RETURN" AS
+    ON SELECT TO price_changes DO INSTEAD  SELECT products.id,
+    products.title,
+    array_agg(prices.price ORDER BY prices.created_at DESC) AS prices,
+    max(prices.created_at) AS last_updated
+   FROM prices,
+    products
+  WHERE ((products.id = prices.product_id) AND (prices.product_id IN ( SELECT prices_1.product_id
+           FROM prices prices_1
+          GROUP BY prices_1.product_id
+         HAVING (count(prices_1.product_id) > 1))))
+  GROUP BY products.id
+  ORDER BY max(prices.created_at) DESC;
+
+
+--
+-- Name: set_generic_products_depth_insert; Type: TRIGGER; Schema: public; Owner: boodschappen
 --
 
 CREATE TRIGGER set_generic_products_depth_insert BEFORE INSERT ON generic_products FOR EACH ROW EXECUTE PROCEDURE set_depth_column();
 
 
 --
--- Name: set_generic_products_depth_update; Type: TRIGGER; Schema: public; Owner: -
+-- Name: set_generic_products_depth_update; Type: TRIGGER; Schema: public; Owner: boodschappen
 --
 
 CREATE TRIGGER set_generic_products_depth_update BEFORE UPDATE ON generic_products FOR EACH ROW EXECUTE PROCEDURE set_depth_column();
 
 
 --
--- Name: update_products_on_update; Type: TRIGGER; Schema: public; Owner: -
+-- Name: update_products_on_update; Type: TRIGGER; Schema: public; Owner: boodschappen
 --
 
 CREATE TRIGGER update_products_on_update BEFORE UPDATE ON products FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 
 
 --
--- Name: fk_companies; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_companies; Type: FK CONSTRAINT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY prices
@@ -682,7 +831,7 @@ ALTER TABLE ONLY prices
 
 
 --
--- Name: fk_generic_product; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_generic_product; Type: FK CONSTRAINT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY products
@@ -690,7 +839,7 @@ ALTER TABLE ONLY products
 
 
 --
--- Name: fk_generic_products_self; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_generic_products_self; Type: FK CONSTRAINT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY generic_products
@@ -698,7 +847,7 @@ ALTER TABLE ONLY generic_products
 
 
 --
--- Name: fk_products; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_products; Type: FK CONSTRAINT; Schema: public; Owner: boodschappen
 --
 
 ALTER TABLE ONLY prices
@@ -706,7 +855,7 @@ ALTER TABLE ONLY prices
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: -
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
