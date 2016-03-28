@@ -214,10 +214,10 @@ class Product extends Model
      * @throws CategoryWasFound
      */
     private function guessExactMatch($input, array $categories) {
-        $parts = preg_split(static::$parts_regex, $input);
+        $parts = preg_split(static::$parts_regex, strtolower($input));
 
         foreach($categories as $category) {
-            if(in_array($category->title, $parts)) {
+            if(in_array(strtolower($category->title), $parts)) {
                 throw new CategoryWasFound($category);
             }
         }
