@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\DB;
 
 class Category extends Model
 {
+    const FOOD = 1;
+
     public $table = 'generic_products';
     public $timestamps = false;
 

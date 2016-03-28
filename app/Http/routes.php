@@ -32,9 +32,9 @@ Route::group(['middleware' => ['web']], function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-    // Route::get('/home', 'HomeController@index');
-
-    Route::resource('lists', 'ShoppingListsController');
+	Route::group(['middleware' => 'auth'], function () {
+	    Route::resource('lists', 'ShoppingListsController');
+	});
     Route::resource('products', 'ProductsController');
     Route::resource('categories', 'CategoriesController');
 });

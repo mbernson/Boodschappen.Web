@@ -132,6 +132,13 @@ class Product extends Model
         }
     }
 
+    public static function cacheCategories() {
+	    echo "Caching categories...\n";
+	    static::$categories = Category::find(1)
+		    ->subcategories()->orderBy('depth', 'desc')->get();
+	    echo "Done.\n";
+    }
+
     /**
      * @param null $input
      * @param array|null $categories
@@ -139,10 +146,7 @@ class Product extends Model
      */
     public function guessCategory($input = null, array $categories = null) {
         if(!static::$categories) {
-            echo "Caching categories...\n";
-            static::$categories = Category::find(1)
-                ->subcategories()->orderBy('depth', 'desc')->get();
-            echo "Done.\n";
+		$this->cacheCategories();
         }
 
         if(is_null($categories)) {
