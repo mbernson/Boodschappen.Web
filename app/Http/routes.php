@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'ProductsController@index');
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +32,7 @@ Route::group(['middleware' => ['web']], function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-    Route::get('/home', 'HomeController@index');
+    // Route::get('/home', 'HomeController@index');
 
     Route::resource('products', 'ProductsController');
     Route::resource('categories', 'CategoriesController');

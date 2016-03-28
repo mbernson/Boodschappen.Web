@@ -47,7 +47,6 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/') }}">Zoeken</a></li>
                     <li><a href="{{ url('/products') }}">Producten</a></li>
                     <li><a href="{{ url('/categories') }}">Categorieën</a></li>
                     <li><a href="{{ url('/lists') }}">Lijstjes</a></li>
