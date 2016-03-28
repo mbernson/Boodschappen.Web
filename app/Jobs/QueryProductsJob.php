@@ -2,6 +2,8 @@
 
 namespace Boodschappen\Jobs;
 
+use Log;
+
 use Boodschappen\Crawling\ProductDataSource;
 use Boodschappen\Database\Category;
 use Boodschappen\Database\Product;
@@ -43,6 +45,7 @@ class QueryProductsJob extends Job implements ShouldQueue
      */
     public function handle()
     {
+Log::notice("Running QueryProductsJob for query {$this->query}");
         /** @var ProductDataSource $source */
         $source = app()->make($this->adapter);
 

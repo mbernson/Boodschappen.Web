@@ -48,8 +48,15 @@ class RunScheduledQueries extends Command
     {
         $this->db->transaction(function(Connection $db) {
             $table = 'schedule';
-            $interval = DB::raw("now() - interval '5 days'");
+            $interval = DB::raw("now() - interval '2 days'");
             $queries = $db->table($table)->where('last_crawled_at', '<=', $interval)->select('query')->pluck('query');
+
+$count = count($queries);
+		if($count == 0 ) {
+$this->info('No queries available to run');
+} else {
+$this->info("Going to run {$count} queries");
+}
 
             foreach($queries as $query) {
                 echo "Dispatched $query\n";
