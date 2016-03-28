@@ -34,6 +34,7 @@ Route::group(['middleware' => 'web'], function () {
 
     // Route::get('/home', 'HomeController@index');
 
+    Route::resource('lists', 'ShoppingListsController');
     Route::resource('products', 'ProductsController');
     Route::resource('categories', 'CategoriesController');
 });
