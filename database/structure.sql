@@ -789,14 +789,14 @@ CREATE INDEX products_barcode_index ON products USING btree (barcode);
 CREATE RULE "_RETURN" AS
     ON SELECT TO price_changes DO INSTEAD  SELECT products.id,
     products.title,
-    array_agg(prices.price ORDER BY prices.created_at DESC) AS prices,
+    array_agg(prices.price ORDER BY prices.created_at) AS prices,
     max(prices.created_at) AS last_updated
    FROM prices,
     products
-  WHERE ((products.id = prices.product_id) AND (prices.product_id IN ( SELECT prices_1.product_id
+  WHERE (((products.id = prices.product_id) AND (prices.product_id IN ( SELECT prices_1.product_id
            FROM prices prices_1
           GROUP BY prices_1.product_id
-         HAVING (count(prices_1.product_id) > 1))))
+         HAVING (count(prices_1.product_id) > 1)))) AND (prices.price >= 0.05))
   GROUP BY products.id
   ORDER BY max(prices.created_at) DESC;
 

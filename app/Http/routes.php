@@ -32,11 +32,21 @@ Route::group(['middleware' => ['web']], function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-	Route::group(['middleware' => 'auth'], function () {
-	    Route::resource('lists', 'ShoppingListsController');
-	});
+    Route::group(['middleware' => 'auth'], function () {
+        Route::resource('lists', 'ShoppingListsController');
+    });
+
     Route::resource('products', 'ProductsController');
     Route::resource('categories', 'CategoriesController');
+
+    Route::get('price_changes', function() {
+	    $changes = DB::select("select *, (prices[2] - prices[1]) as difference,
+		    round((prices[2] - prices[1]) / prices[1], 2) as change
+		    from price_changes
+		    order by change
+		    limit 50;");
+	    return view('table', ['items' => $changes]);
+    });
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Api'], function() {

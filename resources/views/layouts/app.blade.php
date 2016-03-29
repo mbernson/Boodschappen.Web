@@ -49,6 +49,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/products') }}">Producten</a></li>
                     <li><a href="{{ url('/categories') }}">Categorieën</a></li>
+                    <li><a href="{{ url('/price_changes') }}">Prijswijzigingen</a></li>
                     <li><a href="{{ url('/lists') }}">Lijstjes</a></li>
                 </ul>
 
