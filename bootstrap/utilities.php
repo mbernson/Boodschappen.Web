@@ -51,3 +51,11 @@ function companyName($id) {
     ];
     return $companies[$id];
 }
+
+function priceChanges($str) {
+	$str = str_replace('{', '', $str);
+	$str = str_replace('}', '', $str);
+	$parts = explode(',', $str);
+	array_map('floatval', $parts);
+	return '&euro;'.join(' &rarr; &euro;', $parts);
+}

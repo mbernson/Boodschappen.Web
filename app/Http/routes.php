@@ -40,12 +40,26 @@ Route::group(['middleware' => 'web'], function () {
     Route::resource('categories', 'CategoriesController');
 
     Route::get('price_changes', function() {
-	    $changes = DB::select("select *, (prices[2] - prices[1]) as difference,
-		    round((prices[2] - prices[1]) / prices[1], 2) as change
-		    from price_changes
-		    order by change
-		    limit 50;");
-	    return view('table', ['items' => $changes]);
+            $numberFormatter = new NumberFormatter('nl_NL', NumberFormatter::DECIMAL);
+	    $changes = DB::select("
+		    select id, title, prices,
+			    last_updated,
+			    (prices[2] - prices[1]) as difference,
+			    round((prices[2] - prices[1]) / prices[1], 2) as change
+			    from price_changes
+			    order by change
+			    limit 50;
+	    ");
+	    $changes = new Illuminate\Support\Collection($changes);
+	    $changes->map(function($item) {
+		    $item->prices = priceChanges($item->prices);
+		    return $item;
+	    });
+	    
+	    return view('price_changes', [
+		    'changes' => $changes,
+		    'currencyFormatter' => $numberFormatter,
+	    ]);
     });
 });
 
