@@ -44,11 +44,12 @@ Route::group(['middleware' => 'web'], function () {
 	    $changes = DB::select("
 		    select id, title, prices,
 			    last_updated,
-			    (prices[2] - prices[1]) as difference,
-			    round((prices[2] - prices[1]) / prices[1], 2) as change
+			    (prices[1] - prices[2]) as difference,
+			    round((prices[1] - prices[2]) / prices[2], 2) as change
 			    from price_changes
-			    order by change
-			    limit 50;
+			    where last_updated >= now() - interval '1 week'
+			    order by change asc
+			    limit 250;
 	    ");
 	    $changes = new Illuminate\Support\Collection($changes);
 	    $changes->map(function($item) {

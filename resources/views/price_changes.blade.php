@@ -10,17 +10,17 @@
                             <th>Product</th>
                             <th>Prijzen</th>
                             <th>Verschil</th>
-                            <th>Verandering (breuk)</th>
+                            <th>Percentage af/bij</th>
                             <th>Bijgewerkt op</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach($changes as $product)
                         <tr>
-			<td><a href="/products/{{ $product->id }}">{{ $product->title }}</a></td>
-			<td> {{ $product->prices }} </td>
+			<td style="max-width: 320px;"><a href="/products/{{ $product->id }}">{{ $product->title }}</a></td>
+			<td>{{ $product->prices }}</td>
                 <td>&euro;{{ $currencyFormatter->formatCurrency($product->difference, "EUR") }}</td>
-			<td> {{ $product->change }} </td>
+			<td>{{ $product->change * 100 }}%</td>
 			<td>{{ $product->last_updated }}</td>
                         </tr>
                     @endforeach

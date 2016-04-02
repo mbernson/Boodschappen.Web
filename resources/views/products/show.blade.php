@@ -25,7 +25,7 @@
                     @if($product->url)
                     <tr>
                         <th>Link naar productpagina</th>
-                        <td><a href="{{ $product->url }}" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-link"></span> {{ $product->url }}</a></td>
+                        <td><a href="{{ $product->url }}" rel="nofollow" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-link"></span> {{ $product->url }}</a></td>
                     </tr>
 		    @endif
                     <!--

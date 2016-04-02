@@ -4,6 +4,7 @@ namespace Boodschappen\Console\Commands;
 
 use Boodschappen\Database\Category;
 use Illuminate\Console\Command;
+use DB;
 
 class AddCategoryCommand extends Command
 {
@@ -53,6 +54,10 @@ class AddCategoryCommand extends Command
         }
 
         if($category->save()) {
+		DB::table('schedule')->insert([
+			'query' => $category->title,
+			'last_crawled_at' => new \DateTime('2 days ago')
+		]);
             $this->info("Created category '$category->title' ($category->id) with parent '$parent->title' ($parent->id)");
         }
     }

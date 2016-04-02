@@ -56,6 +56,7 @@ function priceChanges($str) {
 	$str = str_replace('{', '', $str);
 	$str = str_replace('}', '', $str);
 	$parts = explode(',', $str);
-	array_map('floatval', $parts);
+	$parts = array_map('floatval', $parts);
+	$parts = array_reverse($parts);
 	return '&euro;'.join(' &rarr; &euro;', $parts);
 }
