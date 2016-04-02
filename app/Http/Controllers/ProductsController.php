@@ -25,9 +25,9 @@ class ProductsController extends Controller
             ->orderBy('products.created_at', 'desc');
 
         if($request->has('q')) {
-		if($request->has('update')) {
-			$this->dispatchSearch($request->get('q'));
-		}
+        if($request->has('update')) {
+            $this->dispatchSearch($request->get('q'));
+        }
             $query = join('', ['%', $request->get('q'), '%']);
             $products->where('title', 'ilike', $query)
                 ->orWhere('brand', 'ilike', $query);

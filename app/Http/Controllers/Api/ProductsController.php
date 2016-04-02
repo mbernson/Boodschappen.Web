@@ -6,12 +6,12 @@ use DB;
 
 class ProductsController extends Controller
 {
-	private $allowed_ordering = [
-		'created_at' => 'products.created_at',
-		'id' => 'products.id',
-		'brand' => 'products.brand',
-		'price' => 'price'
-	];
+    private $allowed_ordering = [
+        'created_at' => 'products.created_at',
+        'id' => 'products.id',
+        'brand' => 'products.brand',
+        'price' => 'price'
+    ];
 
     public function index(Request $request) {
         $cols = ['id', 'title', 'brand', 'unit_amount', 'unit_size', 'bulk', 'prices.price', 'company_id', 'url'];
@@ -24,17 +24,17 @@ class ProductsController extends Controller
             $products->where('title', 'ilike', $query)
                 ->orWhere('brand', 'ilike', $query);
         }
-	$max_limit = 100;
-	$limit = $request->get('limit', $max_limit);
-	$limit = $limit > $max_limit ? $max_limit : $limit;
+    $max_limit = 100;
+    $limit = $request->get('limit', $max_limit);
+    $limit = $limit > $max_limit ? $max_limit : $limit;
         $products->limit($limit);
 
-	$default_order = 'created_at';
-	$order_by = $request->get('orderBy', $default_order);
-	$order_by = in_array($order_by, $this->allowed_ordering) ? $order_by : $default_order;
-	$direction = $request->get('direction', 'desc');
-	$direction = in_array($direction, ['asc', 'desc']) ? $direction : 'desc';
-	$products->orderBy($this->allowed_ordering[$order_by], $direction);
+    $default_order = 'created_at';
+    $order_by = $request->get('orderBy', $default_order);
+    $order_by = in_array($order_by, $this->allowed_ordering) ? $order_by : $default_order;
+    $direction = $request->get('direction', 'desc');
+    $direction = in_array($direction, ['asc', 'desc']) ? $direction : 'desc';
+    $products->orderBy($this->allowed_ordering[$order_by], $direction);
 
         $results = $products->get();
 

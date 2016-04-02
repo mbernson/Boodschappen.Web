@@ -52,7 +52,7 @@ class RunScheduledQueries extends Command
             $queries = $db->table($table)->where('last_crawled_at', '<=', $interval)->select('query')->pluck('query');
 
 $count = count($queries);
-		if($count == 0 ) {
+        if($count == 0) {
 $this->info('No queries available to run');
 } else {
 $this->info("Going to run {$count} queries");

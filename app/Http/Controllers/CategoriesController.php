@@ -69,7 +69,7 @@ class CategoriesController extends Controller
             ->orderBy('unit_amount', 'asc')
             ->orderBy('bulk', 'asc')
             ->orderBy('price', 'asc')
-	    ->get();
+        ->get();
         return view('categories.show')
             ->withProducts($products)
             ->withCategory($category);
