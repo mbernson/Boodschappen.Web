@@ -43,5 +43,9 @@ class AppServiceProvider extends ServiceProvider
             $numberFormatter = new NumberFormatter('nl_NL', NumberFormatter::DECIMAL);
             return $numberFormatter;
         });
+        
+        view()->composer(
+            'lists', 'App\Http\ViewComposers\ShoppingListsComposer'
+        );
     }
 }
