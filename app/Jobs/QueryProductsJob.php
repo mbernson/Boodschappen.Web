@@ -45,7 +45,7 @@ class QueryProductsJob extends Job implements ShouldQueue
      */
     public function handle()
     {
-Log::notice("Running QueryProductsJob for query {$this->query}");
+        Log::notice("Running QueryProductsJob for query {$this->query}");
         /** @var ProductDataSource $source */
         $source = app()->make($this->adapter);
 
@@ -97,20 +97,20 @@ Log::notice("Running QueryProductsJob for query {$this->query}");
             echo "Adding new product $product->title\n";
         }
 
-	if(empty($product->generic_product_id)) {
-		if(empty($domain_product->category)) {
-			$categoryInput = $domain_product->title;
-			$category = $product->guessCategory($categoryInput, $this->categories);
-		} else {
-			$category = Category::firstOrCreate([
-				'title' => $domain_product->category,
-				'parent_id' => Category::FOOD,
-			]);
-			echo "Created category $category->title\n";
-			Product::cacheCategories();
-		}
-		$product->generic_product_id = $category->id;
-	}
+        if(empty($product->generic_product_id)) {
+            if(empty($domain_product->category)) {
+                $categoryInput = $domain_product->title;
+                $category = $product->guessCategory($categoryInput, $this->categories);
+            } else {
+                $category = Category::firstOrCreate([
+                    'title' => $domain_product->category,
+                    'parent_id' => Category::FOOD,
+                ]);
+                echo "Created category $category->title\n";
+                Product::cacheCategories();
+            }
+            $product->generic_product_id = $category->id;
+        }
 
         $product->save();
         echo "\n";

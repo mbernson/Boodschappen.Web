@@ -39,29 +39,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::resource('products', 'ProductsController');
     Route::resource('categories', 'CategoriesController');
 
-    Route::get('price_changes', function() {
-            $numberFormatter = new NumberFormatter('nl_NL', NumberFormatter::DECIMAL);
-	    $changes = DB::select("
-		    select id, title, prices,
-			    last_updated,
-			    (prices[1] - prices[2]) as difference,
-			    round((prices[1] - prices[2]) / prices[2], 2) as change
-			    from price_changes
-			    where last_updated >= now() - interval '1 week'
-			    order by change asc
-			    limit 250;
-	    ");
-	    $changes = new Illuminate\Support\Collection($changes);
-	    $changes->map(function($item) {
-		    $item->prices = priceChanges($item->prices);
-		    return $item;
-	    });
-	    
-	    return view('price_changes', [
-		    'changes' => $changes,
-		    'currencyFormatter' => $numberFormatter,
-	    ]);
-    });
+    Route::get('price_changes', 'PricesController@priceChanges');
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Api'], function() {

@@ -4,6 +4,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
+<h2>Prijs wijzigingen</h2>
+<form>
+<p>Van de afgelopen <input type="number" name="since" value="{{ $days }}" /> dagen</p>
+<input type="submit" />
+</form>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -19,7 +24,7 @@
                         <tr>
 			<td style="max-width: 320px;"><a href="/products/{{ $product->id }}">{{ $product->title }}</a></td>
 			<td>{{ $product->prices }}</td>
-                <td>&euro;{{ $currencyFormatter->formatCurrency($product->difference, "EUR") }}</td>
+                <td>{{ $currencyFormatter->formatCurrency($product->difference, "EUR") }}</td>
 			<td>{{ $product->change * 100 }}%</td>
 			<td>{{ $product->last_updated }}</td>
                         </tr>
