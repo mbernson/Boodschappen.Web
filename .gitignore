@@ -8,3 +8,4 @@ composer.phar
 *.swp
 dump.sql
 *.gz
+coverage.clover
