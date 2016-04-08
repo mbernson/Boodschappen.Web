@@ -2,6 +2,7 @@
 
 namespace Boodschappen\Providers;
 
+use Boodschappen\Crawling\DataSources\Dekamart;
 use Illuminate\Support\ServiceProvider;
 
 use Boodschappen\Crawling\DataSources\Hoogvliet;
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
 
     private $product_sources = [
         AlbertHeijn::class,
+        Dekamart::class,
         Jumbo::class,
         Hoogvliet::class,
     ];
