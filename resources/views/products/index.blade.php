@@ -11,7 +11,7 @@
                     <label for="update">Update</label>
                     <input type="submit" value="Zoeken" />
                 </form>
-                <p>Totaal: {{ $count }} producten</p>
+                <p>Doorzoek {{ $products_count }} producten in {{ $categories_count }} categorie&euml;n.</p>
                 {!! $products->links() !!}
                 @include('partials.products_table', compact('products'))
                 {!! $products->links() !!}

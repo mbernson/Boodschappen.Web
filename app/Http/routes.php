@@ -32,13 +32,16 @@ Route::group(['middleware' => ['web']], function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-	Route::group(['middleware' => 'auth'], function () {
-	    Route::resource('lists', 'ShoppingListsController');
+    Route::group(['middleware' => 'auth'], function () {
+        Route::resource('lists', 'ShoppingListsController');
         Route::post('lists/add', 'ShoppingListsController@add');
         Route::delete('lists/remove', 'ShoppingListsController@remove');
-	});
+    });
+
     Route::resource('products', 'ProductsController');
     Route::resource('categories', 'CategoriesController');
+
+    Route::get('price_changes', 'PricesController@priceChanges');
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Api'], function() {
@@ -49,5 +52,4 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Api'], f
     Route::put('/products/{barcode}', 'ProductsController@update');
 
     Route::post('/scans', 'ProductsController@add');
-
 });

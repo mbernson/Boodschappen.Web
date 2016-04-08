@@ -3,8 +3,8 @@
 namespace Boodschappen\Http\Controllers;
 
 use Boodschappen\Database\Product;
+use Boodschappen\Database\Category;
 use Illuminate\Http\Request;
-
 use Boodschappen\Http\Requests;
 
 use Auth;
@@ -25,9 +25,9 @@ class ProductsController extends Controller
             ->orderBy('products.created_at', 'desc');
 
         if($request->has('q')) {
-		if($request->has('update')) {
-			$this->dispatchSearch($request->get('q'));
-		}
+        if($request->has('update')) {
+            $this->dispatchSearch($request->get('q'));
+        }
             $query = join('', ['%', $request->get('q'), '%']);
             $products->where('title', 'ilike', $query)
                 ->orWhere('brand', 'ilike', $query);
@@ -35,8 +35,11 @@ class ProductsController extends Controller
 
         $products = $products->paginate(100);
         return view('products.index')
-            ->withProducts($products)
-            ->withCount(Product::count());
+            ->with([
+                'products' => $products,
+                'products_count' => Product::count(),
+                'categories_count' => Category::count(),
+            ]);
     }
 
 

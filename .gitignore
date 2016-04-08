@@ -6,3 +6,5 @@ Homestead.json
 .env
 composer.phar
 *.swp
+dump.sql
+*.gz
