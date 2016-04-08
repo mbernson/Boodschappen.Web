@@ -26,8 +26,6 @@ class Jumbo extends BaseDataSource implements ProductDataSource
     {
         $crawler = $this->client->request('GET', "http://www.jumbo.com/zoeken?SearchTerm=$query");
 
-        Storage::put('jumbo.html', $crawler->html());
-
         $results = $crawler->filter('.jum-item')->each(function(Crawler $node) {
             try {
                 $product = new Product();

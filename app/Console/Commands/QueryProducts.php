@@ -2,6 +2,7 @@
 
 namespace Boodschappen\Console\Commands;
 
+use Boodschappen\Jobs\QueryProductsJob;
 use Illuminate\Console\Command;
 
 class QueryProducts extends Command
@@ -37,14 +38,12 @@ class QueryProducts extends Command
     public function handle()
     {
         $product_sources = [
-            \Boodschappen\Crawling\DataSources\Hoogvliet::class,
-            \Boodschappen\Crawling\DataSources\Jumbo::class,
-            \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
+            \Boodschappen\Crawling\DataSources\Dekamart::class,
         ];
         $query = $this->argument('query');
         foreach($product_sources as $klass) {
             echo "Querying $klass for '$query'...\n\n";
-            $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);
+            $job = new QueryProductsJob($klass, $query);
             $job->handle();
         }
         return true;

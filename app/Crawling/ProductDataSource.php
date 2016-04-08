@@ -14,16 +14,11 @@ interface ProductDataSource
     public function query($search_terms);
 
     /**
-     * @param Barcode $barcode
-     * @return Product|null
+     * Returns an array of products that are currently on sale.
+     *
+     * @return Product[]
      */
-//    public function queryBarcode(Barcode $barcode);
-
-    /**
-     * @param Product $product
-     * @return Product
-     */
-//    public function update(Product $product);
+//    public function onSale(); 
 
     /**
      * @return int

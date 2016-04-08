@@ -18,10 +18,10 @@
         @foreach($products as $product)
             <tr>
                 <td><a href="/products/{{ $product->id }}">{{ $product->title }}</a></td>
-                <td>{{ $product->brand }}</td>
+                <td>{{ $product->brand ?? 'Onbekend merk' }}</td>
                 <td>{{ $product->amount }}</td>
                 <td>{{ $currencyFormatter->formatCurrency($product->price, "EUR") }}</td>
-                <td>{{ companyName($product->company_id) }}</td>
+                <td>{{ config('boodschappen.companies')[$product->company_id] }}</td>
             </tr>
         @endforeach
         </tbody>

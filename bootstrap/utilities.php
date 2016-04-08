@@ -1,11 +1,7 @@
 <?php
 use Boodschappen\Database\Category;
 
-/**
- * @param $title
- * @param $parent
- */
-function cat($title, $parent) {
+function cat(string $title, string $parent) {
     $category = new Category();
     $category->title = $title;
 
@@ -39,17 +35,6 @@ function filter_whitespace($text) {
     $text = str_replace("\n", '', $text);
     $text = str_replace(' ', '', $text);
     return trim($text);
-}
-
-function companyName($id) {
-    $companies = [
-        1 => 'Jumbo',
-        2 => 'Albert Heijn',
-        3 => 'Bol.com',
-        4 => 'OpenFoodFacts',
-        5 => 'Hoogvliet',
-    ];
-    return $companies[$id];
 }
 
 function priceChanges($str) {
