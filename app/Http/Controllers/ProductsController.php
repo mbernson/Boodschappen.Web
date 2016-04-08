@@ -48,6 +48,7 @@ class ProductsController extends Controller
             \Boodschappen\Crawling\DataSources\Hoogvliet::class,
             \Boodschappen\Crawling\DataSources\Jumbo::class,
             \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
+            \Boodschappen\Crawling\DataSources\Dekamart::class,
         ];
         foreach($product_sources as $klass) {
             $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);

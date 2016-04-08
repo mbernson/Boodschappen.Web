@@ -53,7 +53,7 @@ class Dekamart extends BaseDataSource implements ProductDataSource
                     $product->setGuessedUnitSizeAndAmount($node->filter('.subname')->first()->text());
                 } catch(\InvalidArgumentException $e) { }
 
-                $product->sku = $node->attr('data-artikel');
+                $product->sku = 'deka-'.$node->attr('data-artikel');
 
                 $extended_attributes = [
                     'image' => $this->baseUrl.$node->filter('.image')->first()->attr('data-original')
