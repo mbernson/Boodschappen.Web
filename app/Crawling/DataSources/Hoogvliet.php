@@ -2,11 +2,8 @@
 
 use Boodschappen\Crawling\ProductDataSource;
 use Boodschappen\Domain\Product;
-use Boodschappen\Domain\Barcode;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
-
-use Storage;
 
 class Hoogvliet extends BaseDataSource implements ProductDataSource
 {
@@ -27,8 +24,6 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
     public function query($query)
     {
         $crawler = $this->client->request('GET', $this->baseUrl."/INTERSHOP/web/WFS/org-webshop-Site/nl_NL/-/EUR/ViewParametricSearch-SimpleOfferSearch?SearchTerm=$query");
-
-        Storage::put('hoogvliet.html', $crawler->html());
 
         $results = $crawler->filter('.ish-productList .ish-productList-item')->each(function(Crawler $node) {
             try {
@@ -54,14 +49,6 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
         });
 
         return array_filter($results);
-    }
-    /**
-     * @param Barcode $barcode
-     * @return array|null
-     */
-    public function queryBarcode(Barcode $barcode)
-    {
-        // TODO: Implement queryBarcode() method.
     }
 
     public function getCompanyId()

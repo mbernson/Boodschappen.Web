@@ -24,7 +24,7 @@ class Barcode
      * @param string $type
      * @throws \Exception
      */
-    public function __construct($value, $type)
+    public function __construct(string $value, string $type)
     {
         if(!in_array($type, static::$barcode_types)) {
             throw new \Exception("'$type' is not an allowed barcode type.");

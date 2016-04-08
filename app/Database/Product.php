@@ -1,6 +1,6 @@
 <?php namespace Boodschappen\Database;
 
-use DB;
+use DB, Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 
@@ -76,7 +76,7 @@ class Product extends Model
         return $query;
     }
 
-    public function renderImage() {
+    public function renderImage(): string {
         try {
             $attrs = $this->extended_attributes;
             if (is_array($attrs)) {
@@ -95,17 +95,14 @@ class Product extends Model
                     return '<img src="' . $attrs->images[0] . '"/>';
                 }
             }
-        } catch(\ErrorException $e) {}
+        } catch(\ErrorException $e) {
+            Log::warning($e);
+        }
 
-            return '';
+        return null;
     }
 
-    /**
-     * @param float $price
-     * @param integer $company_id
-     * @return bool
-     */
-    public function updatePrice($price, $company_id) {
+    public function updatePrice(float $price, int $company_id): bool {
         $table = $this->getConnection()->table('prices');
         $last_price = $table->where('product_id', '=', $this->getKey())
             ->where('company_id', '=', $company_id)
@@ -121,8 +118,6 @@ class Product extends Model
                 'company_id' => $company_id,
                 'price' => $price,
             ]);
-            return false;
-
         }
     }
 
@@ -133,12 +128,7 @@ class Product extends Model
         echo "Done.\n";
     }
 
-    /**
-     * @param null $input
-     * @param array|null $categories
-     * @return \stdClass
-     */
-    public function guessCategory($input = null, array $categories = null) {
+    public function guessCategory(string $input = null, array $categories = null): \stdClass {
         if(!static::$categories) {
             $this->cacheCategories();
         }
@@ -170,7 +160,7 @@ class Product extends Model
      * @return \stdClass
      * @throws CategoryWasFound
      */
-    private function guessLevenshtein($input, array $categories) {
+    private function guessLevenshtein(string $input, array $categories): \stdClass {
         // no shortest distance found, yet
         $shortest = -1;
         $closest = null;
