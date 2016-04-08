@@ -3,8 +3,8 @@
 namespace Boodschappen\Http\Controllers;
 
 use Boodschappen\Database\Product;
+use Boodschappen\Database\Category;
 use Illuminate\Http\Request;
-
 use Boodschappen\Http\Requests;
 
 use Auth;
@@ -35,8 +35,11 @@ class ProductsController extends Controller
 
         $products = $products->paginate(100);
         return view('products.index')
-            ->withProducts($products)
-            ->withCount(Product::count());
+            ->with([
+                'products' => $products,
+                'products_count' => Product::count(),
+                'categories_count' => Category::count(),
+            ]);
     }
 
 

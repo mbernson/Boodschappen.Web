@@ -10,7 +10,7 @@
                 <ul>
                     <li><a href="{{ $category->parent->id }}">{{ $category->parent->title }}</a>
                         <ul>
-                            @foreach($category->parent->children as $cat)
+                            @foreach($category->parent->children()->limit(50)->get() as $cat)
                             <li>
                                 @if($cat->id == $category->id)
                                     <strong>{{ $cat->title }}</strong>

@@ -71,7 +71,7 @@ class Product extends Model
             ->where('unit_size', 'ilike', "$unit%");
         if($amount > 0) {
             $query->where('unit_amount', '<', $amount + $margin)
-                  ->where('unit_amount', '>', $amount - $margin);
+                ->where('unit_amount', '>', $amount - $margin);
         }
         return $query;
     }
@@ -97,7 +97,7 @@ class Product extends Model
             }
         } catch(\ErrorException $e) {}
 
-        return '';
+            return '';
     }
 
     /**
@@ -115,18 +115,12 @@ class Product extends Model
         if($last_price && $price == $last_price->price) {
             return true;
         } else {
-            try {
-                echo "Saving price €$price for product $this->title\n";
-                return $table->insert([
-                    'product_id' => $this->getKey(),
-                    'company_id' => $company_id,
-                    'price' => $price,
-                ]);
-            } catch(QueryException $e) {
-                echo 'Caught an invalid insert.';
-                echo $e->getMessage();
-                echo '====================';
-            }
+            echo "Saving price €$price for product $this->title\n";
+            return $table->insert([
+                'product_id' => $this->getKey(),
+                'company_id' => $company_id,
+                'price' => $price,
+            ]);
             return false;
 
         }
@@ -146,7 +140,7 @@ class Product extends Model
      */
     public function guessCategory($input = null, array $categories = null) {
         if(!static::$categories) {
-        $this->cacheCategories();
+            $this->cacheCategories();
         }
 
         if(is_null($categories)) {
