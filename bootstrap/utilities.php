@@ -23,8 +23,8 @@ function cat($title, $parent) {
 
 function q($query) {
     $product_sources = [
-//        \Boodschappen\Crawling\DataSources\Hoogvliet::class,
-//        \Boodschappen\Crawling\DataSources\Jumbo::class,
+        \Boodschappen\Crawling\DataSources\Hoogvliet::class,
+        \Boodschappen\Crawling\DataSources\Jumbo::class,
         \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
     ];
     foreach($product_sources as $klass) {
@@ -58,5 +58,9 @@ function priceChanges($str) {
 	$parts = explode(',', $str);
 	$parts = array_map('floatval', $parts);
 	$parts = array_reverse($parts);
-	return '&euro;'.join(' &rarr; &euro;', $parts);
+        $formatter = new \NumberFormatter('nl_NL', \NumberFormatter::CURRENCY);
+        $parts = array_map(function($price) use ($formatter) {
+            return $formatter->formatCurrency($price, 'EUR');
+        }, $parts);
+	return join(' &rarr; ', $parts);
 }
