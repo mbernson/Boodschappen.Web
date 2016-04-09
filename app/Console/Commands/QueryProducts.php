@@ -38,7 +38,7 @@ class QueryProducts extends Command
     public function handle()
     {
         $product_sources = [
-            \Boodschappen\Crawling\DataSources\Dekamart::class,
+            \Boodschappen\Crawling\DataSources\Dekamarkt::class,
         ];
         $query = $this->argument('query');
         foreach($product_sources as $klass) {

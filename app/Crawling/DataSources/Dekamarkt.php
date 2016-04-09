@@ -5,7 +5,7 @@ use Boodschappen\Domain\Product;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Dekamart extends BaseDataSource implements ProductDataSource
+class Dekamarkt extends BaseDataSource implements ProductDataSource
 {
     /** @var Client */
     private $client;
