@@ -7,6 +7,6 @@ return [
         3 => 'Bol.com',
         4 => 'OpenFoodFacts',
         5 => 'Hoogvliet',
-        6 => 'Jumbo',
+        6 => 'Dekamarkt',
     ]
 ];

@@ -25,9 +25,9 @@ class ProductsController extends Controller
             ->orderBy('products.created_at', 'desc');
 
         if($request->has('q')) {
-        if($request->has('update')) {
-            $this->dispatchSearch($request->get('q'));
-        }
+            if($request->has('update')) {
+                $this->dispatchSearch($request->get('q'));
+            }
             $query = join('', ['%', $request->get('q'), '%']);
             $products->where('title', 'ilike', $query)
                 ->orWhere('brand', 'ilike', $query);
@@ -48,6 +48,7 @@ class ProductsController extends Controller
             \Boodschappen\Crawling\DataSources\Hoogvliet::class,
             \Boodschappen\Crawling\DataSources\Jumbo::class,
             \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
+            \Boodschappen\Crawling\DataSources\Dekamarkt::class,
         ];
         foreach($product_sources as $klass) {
             $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);

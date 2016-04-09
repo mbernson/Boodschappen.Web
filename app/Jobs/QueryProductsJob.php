@@ -45,7 +45,7 @@ class QueryProductsJob extends Job implements ShouldQueue
      */
     public function handle()
     {
-        Log::notice("Running QueryProductsJob for query {$this->query}");
+        Log::notice("Running QueryProductsJob with adapter {$this->adapter} for query {$this->query}");
         /** @var ProductDataSource $source */
         $source = app()->make($this->adapter);
 
