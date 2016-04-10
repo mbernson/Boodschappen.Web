@@ -3,6 +3,7 @@
 use DB, Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
+use Boodschappen\Domain\Quantity;
 
 class Product extends Model
 {
@@ -56,13 +57,13 @@ class Product extends Model
         return "$total $unit";
     }
 
-    public function comparableProducts() {
+    public function comparableProducts(Quantity $quantity = null) {
         $gid = $this->category->id;
         $generic_ids = DB::table(DB::raw("generic_products_subtree($gid)"))
             ->select('id')->pluck('id');
 
-        $unit = $this->unit_size[0];
-        $amount = $this->unit_amount;
+        $unit = $quantity ? $quantity->unit_size : $this->unit_size[0];
+        $amount = $quantity ? $quantity->unit_amount : $this->unit_amount;
         $margin = $amount / 8;
 
         $query = Product::select('id', 'title', 'brand', 'unit_amount', 'unit_size')

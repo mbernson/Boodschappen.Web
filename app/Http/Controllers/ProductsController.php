@@ -4,6 +4,7 @@ namespace Boodschappen\Http\Controllers;
 
 use Boodschappen\Database\Product;
 use Boodschappen\Database\Category;
+use Boodschappen\Domain\Quantity;
 use Illuminate\Http\Request;
 use Boodschappen\Http\Requests;
 
@@ -62,7 +63,7 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         /** @var Product $product */
         $product = Product::find($id);
@@ -73,7 +74,13 @@ class ProductsController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $related = $product->comparableProducts()
+        if($request->has('quantity')) {
+            $quantity = Quantity::fromText($request->get('quantity'));
+        } else {
+            $quantity = null;
+        }
+
+        $related = $product->comparableProducts($quantity)
             ->select('id', 'title', 'brand', 'price', 'company_id', 'unit_amount', 'unit_size')
             ->join('prices', 'prices.product_id', '=', 'id')
             ->orderBy('price', 'asc')

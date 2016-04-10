@@ -44,6 +44,9 @@
                 @include('partials.price_history_table', compact('prices', 'currencyFormatter'))
 
                 <h3>Vergelijkbare producten</h3>
+<form>
+<p>Met gewicht: <input type="text" name="quantity" value="{{ $product->unit_amount.' '.$product->unit_size }}" /> <input type="submit" /></p>
+</form>
                 @include('partials.products_table', ['products' => $related, 'currencyFormatter' => $currencyFormatter])
 
                 @if(!empty($product->extended_attributes))
