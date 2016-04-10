@@ -106,7 +106,10 @@ class QueryProductsJob extends Job implements ShouldQueue
                     'title' => $domain_product->category,
                     'parent_id' => Category::FOOD,
                 ]);
-                echo "Created category $category->title\n";
+                if($category->isNew)
+                    echo "Created category $category->title\n";
+                else
+                    echo "Matched category $category->title\n";
                 Product::cacheCategories();
             }
             $product->generic_product_id = $category->id;
