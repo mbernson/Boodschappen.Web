@@ -2,6 +2,7 @@
 
 use Boodschappen\Crawling\ProductDataSource;
 use Boodschappen\Domain\Product;
+use Boodschappen\Domain\Quantity;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -35,7 +36,7 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
                 $price = $node->filter('.kor-product-sale-price')->first()->text();
                 $product->current_price = floatval(filter_whitespace($price));
 
-                $product->setGuessedUnitSizeAndAmount(trim($node->filter('.ratio-base-packing-unit')->first()->text()));
+                $product->quantity = Quantity::fromText(trim($node->filter('.ratio-base-packing-unit')->first()->text()));
                 $product->sku = $node->filter('input[name="SKU"]')->first()->attr('value');
                 $product->extended_attributes = [
                     'image' => $this->baseUrl.$node->filter('img.ish-product-image')->attr('src'),
@@ -48,7 +49,7 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
             }
         });
 
-        return array_filter($results);
+        return $results;
     }
 
     public function getCompanyId()

@@ -14,13 +14,6 @@ interface ProductDataSource
     public function query($search_terms);
 
     /**
-     * Returns an array of products that are currently on sale.
-     *
-     * @return Product[]
-     */
-//    public function onSale(); 
-
-    /**
      * @return int
      */
     public function getCompanyId();

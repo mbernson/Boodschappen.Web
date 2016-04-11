@@ -51,7 +51,7 @@ class QueryProductsJob extends Job implements ShouldQueue
 
         $company_id = $source->getCompanyId();
 
-        $products = $source->query($this->query);
+        $products = array_filter($source->query($this->query)); // Filter nulls
 
         if(empty($products)) {
             echo "No products found for query $this->query";
@@ -91,6 +91,8 @@ class QueryProductsJob extends Job implements ShouldQueue
         }
 
         $product->fill((array) $domain_product);
+        $product->fill((array) $domain_product->quantity);
+        
         if($product->exists) {
             echo "Updating product $product->title\n";
         } else {

@@ -26,6 +26,10 @@ class Quantity
         return true;
     }
 
+    /**
+     * @param $combined
+     * @return Quantity
+     */
     public static function fromText($combined)
     {
         $quantity = new Quantity();
@@ -37,6 +41,7 @@ class Quantity
 
     public function parseAmount(string $input): float
     {
+        /** @var NumberFormatter $numberFormatter */
         $numberFormatter = app('\NumberFormatter');
         $matches = [];
         if (preg_match_all('/[\d|\.|,]+/', $input, $matches) > 0) {
