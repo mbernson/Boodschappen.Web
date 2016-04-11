@@ -6,6 +6,7 @@ Homestead.json
 .env
 composer.phar
 *.swp
-dump.sql
 *.gz
 coverage.clover
+dump.sql
+backup/*.sql
