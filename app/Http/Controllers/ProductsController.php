@@ -19,9 +19,8 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $cols = ['id', 'title', 'brand', 'unit_amount', 'unit_size', 'prices.price', 'company_id'];
-        $query = Product::query();
-        $products = $query->join('prices', 'prices.product_id', '=', 'id')
+        $cols = ['id', 'title', 'brand', 'unit_amount', 'unit_size', \DB::raw('prices.price / bulk as price_per_piece'), 'company_id'];
+        $products = Product::query()->join('prices', 'prices.product_id', '=', 'id')
             ->select(...$cols)
             ->orderBy('products.created_at', 'desc');
 
@@ -81,9 +80,9 @@ class ProductsController extends Controller
         }
 
         $related = $product->comparableProducts($quantity)
-            ->select('id', 'title', 'brand', 'price', 'company_id', 'unit_amount', 'unit_size')
+            ->select('id', 'title', 'brand', \DB::raw('price / bulk as price_per_piece'), 'company_id', 'unit_amount', 'unit_size', 'bulk')
             ->join('prices', 'prices.product_id', '=', 'id')
-            ->orderBy('price', 'asc')
+            ->orderBy('price_per_piece', 'asc')
             ->get();
 
         return view('products.show')
