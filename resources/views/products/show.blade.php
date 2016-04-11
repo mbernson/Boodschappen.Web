@@ -56,7 +56,7 @@
 
                 <h3>Rauwe productdata</h3>
                 <div class="well-lg">
-                    {!! var_dump($product->toArray()) !!}
+                    <pre>{!! json_encode($product->toArray(), JSON_PRETTY_PRINT) !!}</pre>
                 </div>
             </div>
         </div>
