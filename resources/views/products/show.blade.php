@@ -28,6 +28,16 @@
                         <td><a href="{{ $product->url }}" rel="nofollow" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-link"></span> {{ $product->url }}</a></td>
                     </tr>
 		    @endif
+                    <tr>
+                        <th>Huidige prijs</th>
+                        <td>{{ $currencyFormatter->formatCurrency($prices[0]->price, "EUR") }}</td>
+                    </tr>
+                    @if($product->bulk > 1)
+                    <tr>
+                        <th>Huidige prijs per stuk</th>
+                        <td>{{ $currencyFormatter->formatCurrency($prices[0]->price / $product->bulk, "EUR") }}</td>
+                    </tr>
+                    @endif
                     <!--
                     <tr>
                         <th>Toegevoegd op</th>
@@ -44,6 +54,9 @@
                 @include('partials.price_history_table', compact('prices', 'currencyFormatter'))
 
                 <h3>Vergelijkbare producten</h3>
+<form>
+<p>Met gewicht: <input type="text" name="quantity" value="{{ $product->unit_amount.' '.$product->unit_size }}" /> <input type="submit" /></p>
+</form>
                 @include('partials.products_table', ['products' => $related, 'currencyFormatter' => $currencyFormatter])
 
                 @if(!empty($product->extended_attributes))
@@ -53,7 +66,7 @@
 
                 <h3>Rauwe productdata</h3>
                 <div class="well-lg">
-                    {!! var_dump($product->toArray()) !!}
+                    <pre>{!! json_encode($product->toArray(), JSON_PRETTY_PRINT) !!}</pre>
                 </div>
             </div>
         </div>
