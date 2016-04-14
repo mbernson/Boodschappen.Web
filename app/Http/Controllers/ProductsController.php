@@ -5,6 +5,7 @@ namespace Boodschappen\Http\Controllers;
 use Boodschappen\Database\Product;
 use Boodschappen\Database\Category;
 use Boodschappen\Domain\Quantity;
+use Boodschappen\Jobs\QueryProductsJob;
 use Illuminate\Http\Request;
 use Boodschappen\Http\Requests;
 
@@ -46,14 +47,9 @@ class ProductsController extends Controller
 
 
     private function dispatchSearch($query) {
-        $product_sources = [
-            \Boodschappen\Crawling\DataSources\Hoogvliet::class,
-            \Boodschappen\Crawling\DataSources\Jumbo::class,
-            \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
-            \Boodschappen\Crawling\DataSources\Dekamarkt::class,
-        ];
+        $product_sources = config('boodschappen.product_sources');
         foreach($product_sources as $klass) {
-            $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);
+            $job = new QueryProductsJob($klass, $query);
             $this->dispatch($job);
         }
     }
