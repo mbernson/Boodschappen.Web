@@ -7,8 +7,6 @@ use Boodschappen\Domain\Barcode;
 use Boodschappen\Domain\Quantity;
 use GuzzleHttp\Client;
 
-use Storage;
-
 class AlbertHeijn extends BaseDataSource implements ProductDataSource
 {
     /** @var Client */
@@ -46,7 +44,6 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
         $path = "/service/rest/delegate?url=".$url;
         $response = $this->client->get($path);
         $body = $response->getBody();
-        Storage::put('ah.json', $body);
         $json = json_decode($body);
 
         $products = $this->parseResponse($json);

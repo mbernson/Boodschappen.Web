@@ -29,8 +29,13 @@ class UnitParsingTest extends TestCase
         $this->assertEquals(15.5, $this->product->parseAmount('15,5 g'));
         $this->assertEquals('g', $this->product->parseUnit('15,5 g'));
 
-//        $this->assertEquals(15.5, $this->product->parseAmount('15.5 g'));
-//        $this->assertEquals('g', $this->product->parseUnit('15.5 g'));
+        $this->assertEquals(10, $this->product->parseAmount('10 stuks'));
+        $this->assertEquals('stuks', $this->product->parseUnit('10 stuks'));
+
+        $this->assertEquals(10, $this->product->parseAmount('10 witte bollen'));
+        // $this->assertEquals('witte', $this->product->parseUnit('10 witte bollen'));
+        // $this->assertEquals(15.5, $this->product->parseAmount('15.5 g'));
+        // $this->assertEquals('g', $this->product->parseUnit('15.5 g'));
     }
 
     public function testParsingMultipleUnitSizes() {

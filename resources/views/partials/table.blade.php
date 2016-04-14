@@ -20,6 +20,8 @@
                 <td>{{ $v }}</td>
                 @elseif(is_int($v) || is_float($v))
                 <td>{{ app('\NumberFormatter')->format($v) }}</td>
+                @elseif(is_array($v))
+                <td><code>ongestructureerde data</code></td>
                 @elseif($k == 'company_id')
                 <td>{{ companyName($v) }}</td>
                 @else

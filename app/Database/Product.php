@@ -30,6 +30,7 @@ class Product extends Model
         'bulk' => 'integer',
         'unit_amount' => 'float',
         'price' => 'float',
+        'price_per_piece' => 'float',
         'company_id' => 'int',
     ];
 
@@ -53,8 +54,18 @@ class Product extends Model
         if($amount <= 0)
             $amount = 1;
 
-        $total = $bulk * $amount;
-        return "$total $unit";
+        if($bulk > 1)
+            return "$bulk x $amount $unit";
+        else
+            return "$amount $unit";
+    }
+
+    public function getPricePerPieceAttribute() {
+        if(array_key_exists('price_per_piece', $this->attributes)) {
+            return $this->attributes['price_per_piece'];
+        } else {
+            return $this->price / ($this->bulk ?? 1);
+        }
     }
 
     public function comparableProducts(Quantity $quantity = null) {
@@ -62,11 +73,11 @@ class Product extends Model
         $generic_ids = DB::table(DB::raw("generic_products_subtree($gid)"))
             ->select('id')->pluck('id');
 
-        $unit = $quantity ? $quantity->unit_size : $this->unit_size[0];
+        $unit = $quantity ? $quantity->unit_size[0] : $this->unit_size[0];
         $amount = $quantity ? $quantity->unit_amount : $this->unit_amount;
         $margin = $amount / 8;
 
-        $query = Product::select('id', 'title', 'brand', 'unit_amount', 'unit_size')
+        $query = Product::select('id', 'title', 'brand', 'unit_amount', 'unit_size', 'bulk')
             ->whereIn('generic_product_id', $generic_ids)
             ->where('id', '!=', $this->id)
             ->where('unit_size', 'ilike', "$unit%");
@@ -96,7 +107,7 @@ class Product extends Model
                     return '<img src="' . $attrs->images[0] . '"/>';
                 }
             }
-        } catch(\ErrorException $e) {
+        } catch(\Throwable $e) {
             Log::warning($e);
         }
 
@@ -113,7 +124,7 @@ class Product extends Model
         if($last_price && $price == $last_price->price) {
             return true;
         } else {
-            echo "Saving price €$price for product $this->title\n";
+            Log::notice("Saving price €$price for product $this->title");
             return $table->insert([
                 'product_id' => $this->getKey(),
                 'company_id' => $company_id,
@@ -123,13 +134,11 @@ class Product extends Model
     }
 
     public static function cacheCategories() {
-        echo "Caching categories...\n";
-        static::$categories = Category::find(1)
-            ->subcategories()->orderBy('depth', 'desc')->get();
-        echo "Done.\n";
+        static::$categories = Category::select('id', 'title')
+            ->orderBy('depth', 'desc')->limit(2000)->get();
     }
 
-    public function guessCategory(string $input = null, array $categories = null): \stdClass {
+    public function guessCategory(string $input = null, $categories = null) {
         if(!static::$categories) {
             $this->cacheCategories();
         }
@@ -145,10 +154,10 @@ class Product extends Model
         try {
             $this->guessExactMatch($input, $categories);
             $guessed = $this->guessLevenshtein($input, $categories);
-            echo "Guessed category: $guessed->title\n";
+            // echo "Guessed category: $guessed->title\n";
             return $guessed;
         } catch(CategoryWasFound $result) {
-            echo "Category was matched: {$result->category->title}\n";
+            // echo "Category was matched: {$result->category->title}\n";
             return $result->category;
         }
     }
@@ -157,11 +166,10 @@ class Product extends Model
 
     /**
      * @param string $input
-     * @param array $categories
-     * @return \stdClass
+     * @param $categories
      * @throws CategoryWasFound
      */
-    private function guessLevenshtein(string $input, array $categories): \stdClass {
+    private function guessLevenshtein(string $input, $categories) {
         // no shortest distance found, yet
         $shortest = -1;
         $closest = null;
@@ -202,7 +210,7 @@ class Product extends Model
      * @param array $categories
      * @throws CategoryWasFound
      */
-    private function guessExactMatch($input, array $categories) {
+    private function guessExactMatch($input, $categories) {
         $parts = preg_split(static::$parts_regex, strtolower($input));
 
         foreach($categories as $category) {
@@ -216,7 +224,7 @@ class Product extends Model
 final class CategoryWasFound extends \Exception {
     public $category;
 
-    public function __construct(\stdClass $category) {
+    public function __construct($category) {
         $this->category = $category;
     }
 }

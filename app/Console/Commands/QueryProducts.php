@@ -37,15 +37,10 @@ class QueryProducts extends Command
      */
     public function handle()
     {
-        $product_sources = [
-            \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
-            \Boodschappen\Crawling\DataSources\Hoogvliet::class,
-            \Boodschappen\Crawling\DataSources\Dekamarkt::class,
-            \Boodschappen\Crawling\DataSources\Jumbo::class,
-        ];
+        $product_sources = config('boodschappen.product_sources');
         $query = $this->argument('query');
         foreach($product_sources as $klass) {
-            echo "Querying $klass for '$query'...\n\n";
+            echo("Manually adding query to $klass for '$query'...\n");
             $job = new QueryProductsJob($klass, $query);
             $job->handle();
         }

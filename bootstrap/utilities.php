@@ -17,20 +17,6 @@ function cat(string $title, string $parent) {
     return $category->save();
 }
 
-function q($query) {
-    $product_sources = [
-//        \Boodschappen\Crawling\DataSources\Hoogvliet::class,
-//        \Boodschappen\Crawling\DataSources\Jumbo::class,
-        \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
-    ];
-    foreach($product_sources as $klass) {
-        echo "Querying $klass for '$query'...\n\n";
-        $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);
-        $job->handle();
-    }
-    return true;
-}
-
 function filter_whitespace($text) {
     $text = str_replace("\n", '', $text);
     $text = str_replace(' ', '', $text);
@@ -38,10 +24,10 @@ function filter_whitespace($text) {
 }
 
 function priceChanges($str) {
-	$str = str_replace('{', '', $str);
-	$str = str_replace('}', '', $str);
-	$parts = explode(',', $str);
-	$parts = array_map('floatval', $parts);
-	$parts = array_reverse($parts);
-	return '&euro;'.join(' &rarr; &euro;', $parts);
+    $str = str_replace('{', '', $str);
+    $str = str_replace('}', '', $str);
+    $parts = explode(',', $str);
+    $parts = array_map('floatval', $parts);
+    $parts = array_reverse($parts);
+    return '&euro;'.join(' &rarr; &euro;', $parts);
 }

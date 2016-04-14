@@ -28,7 +28,7 @@
                 @include('partials.products_table', compact('products', 'currencyFormatter'))
 
                 <div class="well-lg">
-                    {!! var_dump($category->toArray()) !!}
+                    <pre>{!! json_encode($category->toArray(), JSON_PRETTY_PRINT) !!}</pre>
                 </div>
             </div>
         </div>

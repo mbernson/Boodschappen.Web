@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\QueryProducts::class,
         Commands\AddCategoryCommand::class,
         Commands\RunScheduledQueries::class,
+        Commands\DumpDatabase::class,
     ];
 
     /**

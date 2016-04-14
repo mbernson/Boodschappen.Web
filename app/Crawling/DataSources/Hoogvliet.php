@@ -26,7 +26,7 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
     {
         $crawler = $this->client->request('GET', $this->baseUrl."/INTERSHOP/web/WFS/org-webshop-Site/nl_NL/-/EUR/ViewParametricSearch-SimpleOfferSearch?SearchTerm=$query");
 
-        $results = $crawler->filter('.ish-productList .ish-productList-item')->each(function(Crawler $node) {
+        return $crawler->filter('.ish-productList .ish-productList-item')->each(function(Crawler $node) {
             try {
                 $product = new Product();
                 $product->title = trim($node->filter('.ws-product-title .hv-brand + div')->first()->text());
@@ -48,8 +48,6 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
                 return null;
             }
         });
-
-        return $results;
     }
 
     public function getCompanyId()

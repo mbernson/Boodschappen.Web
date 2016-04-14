@@ -519,6 +519,35 @@ ALTER SEQUENCE stores_id_seq OWNED BY stores.id;
 
 
 --
+-- Name: temporary_categories; Type: VIEW; Schema: public; Owner: boodschappen
+--
+
+CREATE VIEW temporary_categories AS
+ WITH RECURSIVE child_categories AS (
+         SELECT gp1.id,
+            gp1.title,
+            gp1.parent_id,
+            gp1.depth,
+            gp1.created_at
+           FROM generic_products gp1
+          WHERE (gp1.id = 1)
+        UNION
+         SELECT gp2.id,
+            gp2.title,
+            gp2.parent_id,
+            gp2.depth,
+            gp2.created_at
+           FROM (generic_products gp2
+             JOIN child_categories ON ((gp2.parent_id = child_categories.id)))
+        )
+ SELECT cc.title
+   FROM child_categories cc
+  WHERE (((((cc.title)::text !~~* '%,%'::text) AND ((cc.title)::text !~~* '%/%'::text)) AND ((cc.title)::text !~~* '%(%'::text)) AND ((cc.title)::text !~~* '%-%'::text));
+
+
+ALTER TABLE public.temporary_categories OWNER TO boodschappen;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
@@ -652,11 +681,11 @@ ALTER TABLE ONLY generic_products
 
 
 --
--- Name: generic_products_title_unique; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
+-- Name: generic_products_title_parent_id; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
 ALTER TABLE ONLY generic_products
-    ADD CONSTRAINT generic_products_title_unique UNIQUE (title);
+    ADD CONSTRAINT generic_products_title_parent_id UNIQUE (title, parent_id);
 
 
 --
@@ -748,6 +777,13 @@ ALTER TABLE ONLY users
 
 
 --
+-- Name: idx_generic_product_parent_id; Type: INDEX; Schema: public; Owner: boodschappen; Tablespace: 
+--
+
+CREATE INDEX idx_generic_product_parent_id ON generic_products USING btree (parent_id);
+
+
+--
 -- Name: idx_product_barcode_type; Type: INDEX; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
@@ -789,12 +825,13 @@ CREATE INDEX products_barcode_index ON products USING btree (barcode);
 CREATE RULE "_RETURN" AS
     ON SELECT TO price_changes DO INSTEAD  SELECT products.id,
     products.title,
-    array_agg(prices.price ORDER BY prices.created_at) AS prices,
+    (array_agg(prices.price ORDER BY prices.created_at DESC))[1:2] AS prices,
     max(prices.created_at) AS last_updated
    FROM prices,
     products
   WHERE (((products.id = prices.product_id) AND (prices.product_id IN ( SELECT prices_1.product_id
            FROM prices prices_1
+          WHERE (prices_1.price >= 0.05)
           GROUP BY prices_1.product_id
          HAVING (count(prices_1.product_id) > 1)))) AND (prices.price >= 0.05))
   GROUP BY products.id
@@ -852,16 +889,6 @@ ALTER TABLE ONLY generic_products
 
 ALTER TABLE ONLY prices
     ADD CONSTRAINT fk_products FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
-
-
---
--- Name: public; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --

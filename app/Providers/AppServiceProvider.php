@@ -23,13 +23,6 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    private $product_sources = [
-        AlbertHeijn::class,
-        Dekamarkt::class,
-        Jumbo::class,
-        Hoogvliet::class,
-    ];
-
     /**
      * Register any application services.
      *
@@ -37,7 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach($this->product_sources as $source) {
+        $product_sources = config('boodschappen.product_sources');
+        foreach($product_sources as $source) {
             $this->app->bind($source);
         }
 

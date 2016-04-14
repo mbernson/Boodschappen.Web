@@ -5,6 +5,7 @@ namespace Boodschappen\Http\Controllers;
 use Boodschappen\Database\Product;
 use Boodschappen\Database\Category;
 use Boodschappen\Domain\Quantity;
+use Boodschappen\Jobs\QueryProductsJob;
 use Illuminate\Http\Request;
 use Boodschappen\Http\Requests;
 
@@ -19,10 +20,11 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $cols = ['id', 'title', 'brand', 'unit_amount', 'unit_size', 'prices.price', 'company_id'];
-        $query = Product::query();
-        $products = $query->join('prices', 'prices.product_id', '=', 'id')
+        $cols = ['id', 'title', 'brand', 'unit_amount', 'unit_size', \DB::raw('prices.price / bulk as price_per_piece'), 'company_id'];
+        $products = Product::query()->join('prices', 'prices.product_id', '=', 'id')
             ->select(...$cols)
+            ->orderBy('prices.created_at', 'desc')
+            ->orderBy('products.updated_at', 'desc')
             ->orderBy('products.created_at', 'desc');
 
         if($request->has('q')) {
@@ -45,14 +47,9 @@ class ProductsController extends Controller
 
 
     private function dispatchSearch($query) {
-        $product_sources = [
-            \Boodschappen\Crawling\DataSources\Hoogvliet::class,
-            \Boodschappen\Crawling\DataSources\Jumbo::class,
-            \Boodschappen\Crawling\DataSources\AlbertHeijn::class,
-            \Boodschappen\Crawling\DataSources\Dekamarkt::class,
-        ];
+        $product_sources = config('boodschappen.product_sources');
         foreach($product_sources as $klass) {
-            $job = new \Boodschappen\Jobs\QueryProductsJob($klass, $query);
+            $job = new QueryProductsJob($klass, $query);
             $this->dispatch($job);
         }
     }
@@ -81,9 +78,9 @@ class ProductsController extends Controller
         }
 
         $related = $product->comparableProducts($quantity)
-            ->select('id', 'title', 'brand', 'price', 'company_id', 'unit_amount', 'unit_size')
+            ->select('id', 'title', 'brand', \DB::raw('price / bulk as price_per_piece'), 'company_id', 'unit_amount', 'unit_size', 'bulk')
             ->join('prices', 'prices.product_id', '=', 'id')
-            ->orderBy('price', 'asc')
+            ->orderBy('price_per_piece', 'asc')
             ->get();
 
         return view('products.show')

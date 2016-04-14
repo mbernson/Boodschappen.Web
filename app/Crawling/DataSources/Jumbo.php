@@ -7,8 +7,6 @@ use Boodschappen\Domain\Quantity;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
-use Storage;
-
 class Jumbo extends BaseDataSource implements ProductDataSource
 {
     /** @var Client */
