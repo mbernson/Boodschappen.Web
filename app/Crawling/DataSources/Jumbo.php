@@ -6,8 +6,6 @@ use Boodschappen\Domain\Barcode;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
-use Storage;
-
 class Jumbo extends BaseDataSource implements ProductDataSource
 {
     /** @var Client */
@@ -61,7 +59,7 @@ class Jumbo extends BaseDataSource implements ProductDataSource
             }
         });
 
-        return array_filter($results);
+        return $results;
     }
 
     public function getCompanyId()

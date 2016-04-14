@@ -45,7 +45,7 @@ class QueryProducts extends Command
         ];
         $query = $this->argument('query');
         foreach($product_sources as $klass) {
-            echo "Querying $klass for '$query'...\n\n";
+            echo("Manually adding query to $klass for '$query'...\n");
             $job = new QueryProductsJob($klass, $query);
             $job->handle();
         }

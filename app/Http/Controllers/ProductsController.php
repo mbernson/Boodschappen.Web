@@ -22,6 +22,8 @@ class ProductsController extends Controller
         $cols = ['id', 'title', 'brand', 'unit_amount', 'unit_size', \DB::raw('prices.price / bulk as price_per_piece'), 'company_id'];
         $products = Product::query()->join('prices', 'prices.product_id', '=', 'id')
             ->select(...$cols)
+            ->orderBy('prices.created_at', 'desc')
+            ->orderBy('products.updated_at', 'desc')
             ->orderBy('products.created_at', 'desc');
 
         if($request->has('q')) {

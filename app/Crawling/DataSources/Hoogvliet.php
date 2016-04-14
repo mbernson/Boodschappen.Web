@@ -48,7 +48,7 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
             }
         });
 
-        return array_filter($results);
+        return $results;
     }
 
     public function getCompanyId()

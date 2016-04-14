@@ -71,7 +71,7 @@ class Product
         if(preg_match_all('/[A-Za-z]+/', $input, $matches) > 0) {
             return last($matches[0]);
         }
-        return null;
+        return 'stuks';
     }
 
     private function parseBulk(string $input): int
