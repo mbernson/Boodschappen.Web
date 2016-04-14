@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\AddCategoryCommand::class,
         Commands\RunScheduledQueries::class,
         Commands\DumpDatabase::class,
+        Commands\CreateGraphsCommand::class,
     ];
 
     /**
@@ -28,6 +29,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('boodschappen:queries')
-                  ->everyFiveMinutes();
+                  ->everyMinute();
     }
 }
