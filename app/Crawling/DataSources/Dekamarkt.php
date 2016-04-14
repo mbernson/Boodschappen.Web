@@ -2,6 +2,7 @@
 
 use Boodschappen\Crawling\ProductDataSource;
 use Boodschappen\Domain\Product;
+use Boodschappen\Domain\Quantity;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -50,7 +51,7 @@ class Dekamarkt extends BaseDataSource implements ProductDataSource
                 $product->current_price = floatval($price);
 
                 try {
-                    $product->setGuessedUnitSizeAndAmount($node->filter('.subname')->first()->text());
+                    $product->quantity = new Quantity($node->filter('.subname')->first()->text());
                 } catch(\InvalidArgumentException $e) { }
 
                 $product->sku = 'deka-'.$node->attr('data-artikel');

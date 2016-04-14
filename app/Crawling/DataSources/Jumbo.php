@@ -3,6 +3,7 @@
 use Boodschappen\Crawling\ProductDataSource;
 use Boodschappen\Domain\Product;
 use Boodschappen\Domain\Barcode;
+use Boodschappen\Domain\Quantity;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -37,9 +38,10 @@ class Jumbo extends BaseDataSource implements ProductDataSource
                 if($price > 0) $price = $price / 100;
                 $product->current_price = $price;
 
-        try {
-            $product->setGuessedUnitSizeAndAmount($node->filter('.jum-pack-size')->first()->text());
-        } catch(\InvalidArgumentException $e) { }
+                try {
+                    $product->quantity = new Quantity($node->filter('.jum-pack-size')->first()->text());
+                } catch(\InvalidArgumentException $e) { }
+                
                 $product->sku = $node->attr('data-jum-product-sku');
 
                 $extended_attributes = $node->attr('data-jum-product-impression');

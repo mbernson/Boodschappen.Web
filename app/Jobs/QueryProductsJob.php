@@ -8,7 +8,6 @@ use Boodschappen\Crawling\ProductDataSource;
 use Boodschappen\Database\Category;
 use Boodschappen\Database\Product;
 use Boodschappen\Domain\Product as DomainProduct;
-use Boodschappen\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -51,13 +50,14 @@ class QueryProductsJob extends Job implements ShouldQueue
 
         $company_id = $source->getCompanyId();
 
-        $products = array_filter($source->query($this->query));
+        $products = array_filter($source->query($this->query)); // Filter nulls
 
         if(empty($products)) {
             Log::notice("No products found for query $this->query");
         } else {
             /** @var DomainProduct $domain_product */
             foreach($products as $domain_product) {
+                $domain_product->validate();
                 $product = $this->saveOrUpdateProduct($domain_product);
                 $product->updatePrice($domain_product->current_price, $company_id);
             }
@@ -77,6 +77,11 @@ class QueryProductsJob extends Job implements ShouldQueue
         ]);
 
         $product->fill((array) $domain_product);
+        $product->fill([
+            'unit_size' => $domain_product->quantity->unit,
+            'unit_amount' => $domain_product->quantity->amount,
+            'bulk' => $domain_product->quantity->bulk,
+        ]);
 
         if(empty($product->generic_product_id)) {
             if(empty($domain_product->category)) {

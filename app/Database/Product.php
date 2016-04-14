@@ -73,8 +73,8 @@ class Product extends Model
         $generic_ids = DB::table(DB::raw("generic_products_subtree($gid)"))
             ->select('id')->pluck('id');
 
-        $unit = $quantity ? $quantity->unit_size[0] : $this->unit_size[0];
-        $amount = $quantity ? $quantity->unit_amount : $this->unit_amount;
+        $unit = $quantity ? $quantity->unit[0] : $this->unit_size[0];
+        $amount = $quantity ? $quantity->amount : $this->unit_amount;
         $margin = $amount / 8;
 
         $query = Product::select('id', 'title', 'brand', 'unit_amount', 'unit_size', 'bulk')
@@ -168,6 +168,7 @@ class Product extends Model
      * @param string $input
      * @param $categories
      * @throws CategoryWasFound
+     * @return Category|null
      */
     private function guessLevenshtein(string $input, $categories) {
         // no shortest distance found, yet
