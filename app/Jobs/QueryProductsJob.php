@@ -70,44 +70,13 @@ class QueryProductsJob extends Job implements ShouldQueue
      * @param DomainProduct $domain_product
      * @return Product
      */
-    private function productForDomainProduct(DomainProduct $domain_product)
-    {
-        if($domain_product->sku != null) {
-            $product = Product::firstOrNew([
-                'sku' => $domain_product->sku,
-            ]);
-        } elseif($domain_product->barcode != null) {
-            $product = Product::firstOrNew([
-                'barcode_type' => $domain_product->barcode->type,
-                'barcode' => $domain_product->barcode->value,
-            ]);
-        } else {
-            $product = Product::firstOrNew([
-                'title' => $domain_product->title,
-                'brand' => $domain_product->brand,
-                'unit_size' => $domain_product->unit_size,
-            ]);
-        }
-        return $product;
-    }
-
-    /**
-     * @param DomainProduct $domain_product
-     * @return Product
-     */
     private function saveOrUpdateProduct(DomainProduct $domain_product)
     {
-        // $product = $this->productForDomainProduct($domain_product);
         $product = Product::firstOrNew([
             'sku' => $domain_product->sku,
         ]);
 
         $product->fill((array) $domain_product);
-        // if($product->exists) {
-        //     echo "Updating product $product->title\n";
-        // } else {
-        //     echo "Adding new product $product->title\n";
-        // }
 
         if(empty($product->generic_product_id)) {
             if(empty($domain_product->category)) {
@@ -118,10 +87,6 @@ class QueryProductsJob extends Job implements ShouldQueue
                     'title' => $domain_product->category,
                     'parent_id' => Category::FOOD,
                 ]);
-                // if($category->isNew)
-                //     echo "Created category $category->title\n";
-                // else
-                //     echo "Matched category $category->title\n";
 
                 // Reload the categories cache
                 Product::cacheCategories();
