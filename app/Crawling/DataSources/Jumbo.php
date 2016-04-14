@@ -39,7 +39,7 @@ class Jumbo extends BaseDataSource implements ProductDataSource
                 $product->current_price = $price;
 
                 try {
-                    $product->quantity = Quantity::fromText($node->filter('.jum-pack-size')->first()->text());
+                    $product->quantity = new Quantity($node->filter('.jum-pack-size')->first()->text());
                 } catch(\InvalidArgumentException $e) { }
                 
                 $product->sku = $node->attr('data-jum-product-sku');

@@ -36,7 +36,7 @@ class Hoogvliet extends BaseDataSource implements ProductDataSource
                 $price = $node->filter('.kor-product-sale-price')->first()->text();
                 $product->current_price = floatval(filter_whitespace($price));
 
-                $product->quantity = Quantity::fromText(trim($node->filter('.ratio-base-packing-unit')->first()->text()));
+                $product->quantity = new Quantity(trim($node->filter('.ratio-base-packing-unit')->first()->text()));
                 $product->sku = $node->filter('input[name="SKU"]')->first()->attr('value');
                 $product->extended_attributes = [
                     'image' => $this->baseUrl.$node->filter('img.ish-product-image')->attr('src'),

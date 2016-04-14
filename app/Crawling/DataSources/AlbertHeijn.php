@@ -100,7 +100,7 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
                 $product->brand = $this->guessBrand($product->title);
 
             $product->current_price = floatval($api_product->priceLabel->now);
-            $product->quantity = Quantity::fromText($api_product->unitSize);
+            $product->quantity = new Quantity($api_product->unitSize);
             $product->sku = $api_product->id;
 
             $product->extended_attributes = [

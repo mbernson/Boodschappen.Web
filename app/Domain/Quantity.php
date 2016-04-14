@@ -7,11 +7,11 @@ class Quantity
     // In which unit are we expressing the quantity?
     // Example: gram, liter, slices
     /** @var string */
-    public $unit_size;
+    public $unit;
 
     // How much of the given unit?
     /** @var float */
-    public $unit_amount = 0.0;
+    public $amount = 0.0;
 
     // How many pieces?
     /** @var int */
@@ -21,22 +21,28 @@ class Quantity
      * @throws \Exception
      */
     public function validate(): bool {
-        if($this->current_price < self::MINIMUM_PRICE)
-            throw new \Exception("Invalid price");
+        if($this->amount < 0)
+            throw new \Exception("Invalid amount");
+        if($this->bulk < 1)
+            throw new \Exception("Invalid bulk");
+        if(is_null($this->unit) || empty($this->unit))
+            throw new \Exception("Unit size may not be null/empty");
+            
         return true;
     }
-
-    /**
-     * @param $combined
-     * @return Quantity
-     */
-    public static function fromText($combined)
+    
+    public function __construct($text)
     {
-        $quantity = new Quantity();
-        $quantity->bulk = $quantity->parseBulk($combined);
-        $quantity->unit_amount = $quantity->parseAmount($combined);
-        $quantity->unit_size = $quantity->parseUnit($combined);
-        return $quantity;
+        if(is_string($text)) {
+            $this->parseQuantity($text);
+        }
+    }
+
+    public function parseQuantity(string $text)
+    {
+        $this->bulk = $this->parseBulk($text);
+        $this->amount = $this->parseAmount($text);
+        $this->unit = $this->parseUnit($text);
     }
 
     public function parseAmount(string $input): float
@@ -62,9 +68,11 @@ class Quantity
 
     private function parseBulk(string $input): int
     {
+        /** @var NumberFormatter $numberFormatter */
+        $numberFormatter = app('\NumberFormatter');
         $matches = [];
-        if(preg_match('/[\d|\.|,]+\ ?x+/', $input, $matches) > 0) {
-            return intval($matches[0]);
+        if(preg_match('/[\d|\.|,]+\ ?(x|stuk|stuks)+/', $input, $matches) > 0) {
+            return $numberFormatter->parse($matches[0]);
         }
         return 1;
     }

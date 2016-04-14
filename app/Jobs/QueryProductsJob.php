@@ -57,6 +57,7 @@ class QueryProductsJob extends Job implements ShouldQueue
         } else {
             /** @var DomainProduct $domain_product */
             foreach($products as $domain_product) {
+                $domain_product->validate();
                 $product = $this->saveOrUpdateProduct($domain_product);
                 $product->updatePrice($domain_product->current_price, $company_id);
             }
@@ -76,7 +77,11 @@ class QueryProductsJob extends Job implements ShouldQueue
         ]);
 
         $product->fill((array) $domain_product);
-        $product->fill((array) $domain_product->quantity);
+        $product->fill([
+            'unit_size' => $domain_product->quantity->unit,
+            'unit_amount' => $domain_product->quantity->amount,
+            'bulk' => $domain_product->quantity->bulk,
+        ]);
 
         if(empty($product->generic_product_id)) {
             if(empty($domain_product->category)) {

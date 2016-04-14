@@ -51,7 +51,7 @@ class Dekamarkt extends BaseDataSource implements ProductDataSource
                 $product->current_price = floatval($price);
 
                 try {
-                    $product->quantity = Quantity::fromText($node->filter('.subname')->first()->text());
+                    $product->quantity = new Quantity($node->filter('.subname')->first()->text());
                 } catch(\InvalidArgumentException $e) { }
 
                 $product->sku = 'deka-'.$node->attr('data-artikel');
