@@ -4,6 +4,7 @@ namespace Boodschappen\Exceptions;
 
 use Exception;
 
+use Haystack\Reporter\ReporterInterface;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -30,13 +31,15 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $e
-     * @return void
+     * @param Exception $exception
      */
-    public function report(Exception $e)
+    public function report(Exception $exception)
     {
-        parent::report($e);
-//        $this->logException($e);
+        parent::report($exception);
+        if ($this->shouldReport($exception)) {
+            $reporter = app(ReporterInterface::class);
+            $reporter->reportException($exception);
+        }
     }
 
     /**
@@ -49,13 +52,5 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         return parent::render($request, $e);
-    }
-
-    private function logException(Exception $e)
-    {
-        $exception = [
-            'message' => $e->getMessage(),
-            'code' => $e->getCode(),
-        ];
     }
 }

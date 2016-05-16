@@ -25,7 +25,8 @@
             "bootstrap/utilities.php"
         ],
         "psr-4": {
-            "Boodschappen\\": "app/"
+            "Boodschappen\\": "app/",
+            "Haystack\\": "lib/Haystack"
         }
     },
     "autoload-dev": {
