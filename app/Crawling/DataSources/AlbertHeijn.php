@@ -46,8 +46,7 @@ class AlbertHeijn extends BaseDataSource implements ProductDataSource
         $body = $response->getBody();
         $json = json_decode($body);
 
-        $products = $this->parseResponse($json);
-        return $products;
+        return $this->parseResponse($json);
     }
 
     /**

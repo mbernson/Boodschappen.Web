@@ -40,7 +40,7 @@ class QueryProductsJob extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
+     * @throws \Exception
      */
     public function handle()
     {
@@ -57,6 +57,9 @@ class QueryProductsJob extends Job implements ShouldQueue
         } else {
             /** @var DomainProduct $domain_product */
             foreach($products as $domain_product) {
+                if(is_null($domain_product)) {
+                    throw new \Exception("Got a null product from data source {$source->getCompanyId()}");
+                }
                 $domain_product->validate();
                 $product = $this->saveOrUpdateProduct($domain_product);
                 $product->updatePrice($domain_product->current_price, $company_id);

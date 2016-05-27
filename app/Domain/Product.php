@@ -41,7 +41,7 @@ class Product
             throw new \Exception("SKU may not be null");
         if($this->current_price < self::MINIMUM_PRICE)
             throw new \Exception("Invalid price");
-        if(!$this->quantity->validate())
+        if(is_null($this->quantity) || !$this->quantity->validate())
             throw new \Exception("Quantity did not validate");
             
         return true;
