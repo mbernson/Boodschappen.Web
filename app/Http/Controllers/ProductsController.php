@@ -72,7 +72,7 @@ class ProductsController extends Controller
             ->get();
 
         if($request->has('quantity')) {
-            $quantity = Quantity::fromText($request->get('quantity'));
+            $quantity = new Quantity($request->get('quantity'));
         } else {
             $quantity = null;
         }
