@@ -88,7 +88,7 @@ class Product extends Model
         return $query;
     }
 
-    public function renderImage(): string {
+    public function renderImage() {
         try {
             $attrs = $this->extended_attributes;
             if (is_array($attrs)) {
