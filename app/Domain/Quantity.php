@@ -57,7 +57,7 @@ class Quantity
         return 0.0;
     }
 
-    public function parseUnit(string $input): string
+    public function parseUnit(string $input)
     {
         $matches = [];
         if(preg_match_all('/[A-Za-z]+/', $input, $matches) > 0) {
