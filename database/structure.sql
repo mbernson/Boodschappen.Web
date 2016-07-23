@@ -482,72 +482,6 @@ ALTER SEQUENCE shopping_lists_id_seq OWNED BY shopping_lists.id;
 
 
 --
--- Name: stores; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
---
-
-CREATE TABLE stores (
-    id integer NOT NULL,
-    title character varying(255) NOT NULL,
-    chain_id integer NOT NULL,
-    city character varying(255) NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
-);
-
-
-ALTER TABLE public.stores OWNER TO boodschappen;
-
---
--- Name: stores_id_seq; Type: SEQUENCE; Schema: public; Owner: boodschappen
---
-
-CREATE SEQUENCE stores_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.stores_id_seq OWNER TO boodschappen;
-
---
--- Name: stores_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: boodschappen
---
-
-ALTER SEQUENCE stores_id_seq OWNED BY stores.id;
-
-
---
--- Name: temporary_categories; Type: VIEW; Schema: public; Owner: boodschappen
---
-
-CREATE VIEW temporary_categories AS
- WITH RECURSIVE child_categories AS (
-         SELECT gp1.id,
-            gp1.title,
-            gp1.parent_id,
-            gp1.depth,
-            gp1.created_at
-           FROM generic_products gp1
-          WHERE (gp1.id = 1)
-        UNION
-         SELECT gp2.id,
-            gp2.title,
-            gp2.parent_id,
-            gp2.depth,
-            gp2.created_at
-           FROM (generic_products gp2
-             JOIN child_categories ON ((gp2.parent_id = child_categories.id)))
-        )
- SELECT cc.title
-   FROM child_categories cc
-  WHERE (((((cc.title)::text !~~* '%,%'::text) AND ((cc.title)::text !~~* '%/%'::text)) AND ((cc.title)::text !~~* '%(%'::text)) AND ((cc.title)::text !~~* '%-%'::text));
-
-
-ALTER TABLE public.temporary_categories OWNER TO boodschappen;
-
---
 -- Name: users; Type: TABLE; Schema: public; Owner: boodschappen; Tablespace: 
 --
 
@@ -632,13 +566,6 @@ ALTER TABLE ONLY schedule ALTER COLUMN id SET DEFAULT nextval('schedule_id_seq':
 --
 
 ALTER TABLE ONLY shopping_lists ALTER COLUMN id SET DEFAULT nextval('shopping_lists_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: boodschappen
---
-
-ALTER TABLE ONLY stores ALTER COLUMN id SET DEFAULT nextval('stores_id_seq'::regclass);
 
 
 --
@@ -750,14 +677,6 @@ ALTER TABLE ONLY shopping_list_has_product
 
 ALTER TABLE ONLY shopping_lists
     ADD CONSTRAINT shopping_lists_pkey PRIMARY KEY (id);
-
-
---
--- Name: stores_pkey; Type: CONSTRAINT; Schema: public; Owner: boodschappen; Tablespace: 
---
-
-ALTER TABLE ONLY stores
-    ADD CONSTRAINT stores_pkey PRIMARY KEY (id);
 
 
 --
