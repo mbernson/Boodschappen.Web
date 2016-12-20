@@ -31,4 +31,4 @@ Een **prijs** is een prijs van een bepaald **product** op een gegeven moment in 
 
 ## Licentie
 
-Dit is closed-source software
+MIT
